@@ -7045,6 +7045,28 @@ static int process_macro(char *line, int size, char *_filename, int linenum)
 		strcpy(line,"\n");
 		return TRUE;
 	}
+	else if ( strncmp(line,MACRO "import",7)==0 )
+	{
+		char language[1024], file[1024];
+		if ( sscanf(line+7,"%*[ \t]%[^:]:%[^\n\r]",language,file) == 2 )
+		{
+			if ( strcmp(language,"python") == 0 )
+			{
+				strcpy(line,"\n");
+				return python_import(file);
+			}
+			else
+			{
+				output_error_raw("%s(%d): import uses unsupported language '%s'", filename, linenum, language);
+				return FALSE;
+			}
+		}
+		else
+		{
+			output_error_raw("%s(%d): import missing argument", filename, linenum);
+			return FALSE;
+		}	
+	}
 	else
 	{
 		char tmp[1024], *p;

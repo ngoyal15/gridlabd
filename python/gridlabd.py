@@ -194,7 +194,6 @@ def control(command) :
 	c.perform()
 	c.close()
 	body = buffer.getvalue()
-	print body
 	return body
 
 ###############################################################################
@@ -222,7 +221,7 @@ def get_double(data,key) :
 		value = data[key].split(' ')
 		return float(value[0])
 	except :
-		print "ERROR: can't find double value for key='{}' in data={}".format(key,json.dumps(data,sort_keys=True,indent=4, separators=(',', ': ')))
+		print("ERROR: can't find double value for key='{}' in data={}".format(key,json.dumps(data,sort_keys=True,indent=4, separators=(',', ': '))))
 
 def get_complex(data,key) :
 	""" Get complex value from a GridLAB-D cmplex property in a list
@@ -253,7 +252,7 @@ def get_complex(data,key) :
 		value = data[key].split(' ')
 		return complex(value[0])
 	except :
-		print "ERROR: can't find complex value for key='{}' in data={}".format(key,json.dumps(data,sort_keys=True,indent=4, separators=(',', ': ')))
+		print("ERROR: can't find complex value for key='{}' in data={}".format(key,json.dumps(data,sort_keys=True,indent=4, separators=(',', ': '))))
 
 def get_unit(data,key) :
 	""" Get units from from a GridLAB-D double or complex property in a list
@@ -280,5 +279,5 @@ def get_unit(data,key) :
 		else :
 			return ''	
 	except :
-		print "ERROR: can't find unit for key='{}' in data={}".format(key,json.dumps(data,sort_keys=True,indent=4, separators=(',', ': ')))
+		print("ERROR: can't find unit for key='{}' in data={}".format(key,json.dumps(data,sort_keys=True,indent=4, separators=(',', ': '))))
 

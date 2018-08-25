@@ -1,0 +1,14 @@
+class test {
+	randomvar x;
+}
+object test:..10 {
+	groupid group1;
+	name `test_{id}`;
+	x "type:normal(0,1); min:-3; max:+3; refresh:1s";
+}
+object test:..10 {
+	groupid group2;
+	x "type:normal(0,1); min:-3; max:+3; refresh:1s";
+}
+#option server
+#set run_realtime=1

@@ -7,10 +7,7 @@
 
 #include <armadillo>
 #include <list>
-#include "message.h"
-#include "../powerflow/triplex_meter.h"
-#include "house.h"
-#include "agent.h"
+#include "interface.h"
 
 using namespace arma;
 using namespace std;

@@ -162,11 +162,6 @@ static KEYWORD dmc_keys[] = {
 		{"MAIN",		DMC_MAIN,			dmc_keys+52},
 		{"CMDARG",		DMC_CMDARG,			NULL},
 };
-static KEYWORD vtc_keys[] = {
-	{"SYNC",		VTC_SYNC,		vtc_keys+1},
-	{"PRECOMMIT",	VTC_PRECOMMIT,	vtc_keys+2},
-	{"COMMIT",		VTC_COMMIT,		NULL},
-};
 
 static struct s_varmap {
 	char *name;
@@ -298,7 +293,6 @@ static struct s_varmap {
 	{"permissive_access", PT_int32, &global_permissive_access, PA_PUBLIC, "enable permissive property access"},
 	{"relax_undefined_if", PT_bool, &global_relax_undefined_if, PA_PUBLIC, "allow #if macro to handle undefined global variable as empty strings"},
 	{"literal_if", PT_bool, &global_literal_if, PA_PUBLIC, "do not interpret lhs of #if macro as a variable name"},
-	{"validto_context", PT_enumeration, &global_validto_context, PA_PUBLIC, "events to which valid_to time applies, rather than just sync passes", vtc_keys},
 	/* add new global variables here */
 };
 
@@ -1050,6 +1044,10 @@ char *global_getvar(char *name, char *buffer, int size)
 #ifdef HAVE_MYSQL
 		//Used specifically to run MYSQL integration autotests
 		{"MYSQL",global_true},
+#endif
+#ifdef HAVE_PYTHON
+		//Used specifically to run PYTHON integration autotests
+		{"PYTHON",global_true},
 #endif
 	};
 	int i;	

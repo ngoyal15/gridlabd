@@ -87,6 +87,7 @@ GLD_SOURCES_PLACE_HOLDER += gldcore/output.h
 GLD_SOURCES_PLACE_HOLDER += gldcore/platform.h
 GLD_SOURCES_PLACE_HOLDER += gldcore/property.c
 GLD_SOURCES_PLACE_HOLDER += gldcore/property.h
+GLD_SOURCES_PLACE_HOLDER += gldcore/gpython.c gldcore/gpython.h
 GLD_SOURCES_PLACE_HOLDER += gldcore/random.c
 GLD_SOURCES_PLACE_HOLDER += gldcore/random.h
 GLD_SOURCES_PLACE_HOLDER += gldcore/realtime.c
@@ -135,7 +136,7 @@ bin_SCRIPTS += gldcore/gridlabd
 
 bin_PROGRAMS += gridlabd
 
-gridlabd_CPPFLAGS =
+gridlabd_CPPFLAGS = 
 gridlabd_CPPFLAGS += $(XERCES_CPPFLAGS)
 gridlabd_CPPFLAGS += $(AM_CPPFLAGS)
 
@@ -160,7 +161,7 @@ bin_SCRIPTS += gldcore/gridlabd
 
 bin_PROGRAMS += gridlabd.bin
 
-gridlabd_bin_CPPFLAGS =
+gridlabd_bin_CPPFLAGS = 
 gridlabd_bin_CPPFLAGS += $(XERCES_CPPFLAGS)
 gridlabd_bin_CPPFLAGS += $(AM_CPPFLAGS)
 

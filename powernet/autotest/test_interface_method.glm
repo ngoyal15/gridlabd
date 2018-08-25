@@ -1,0 +1,25 @@
+
+module residential;
+#set suppress_repeat_messages=0
+#option server
+module tape;
+
+clock {
+	starttime '2000-01-01 00:00:00';
+	stoptime '2000-01-01 01:00:00';
+}
+object house {
+	name house_1;
+	on_init "echo init clock=$CLOCK hostname=$HOSTNAME port=$PORT object=$OBJECT";
+	on_precommit "echo precommit clock=$CLOCK hostname=$HOSTNAME port=$PORT object=$OBJECT";
+	on_presync "echo presync clock=$CLOCK hostname=$HOSTNAME port=$PORT object=$OBJECT";
+	on_sync "echo sync clock=$CLOCK hostname=$HOSTNAME port=$PORT object=$OBJECT";
+	on_postsync "echo postsync clock=$CLOCK hostname=$HOSTNAME port=$PORT object=$OBJECT";
+	on_commit "echo commit clock=$CLOCK hostname=$HOSTNAME port=$PORT object=$OBJECT";
+	on_finalize "echo finalize clock=$CLOCK hostname=$HOSTNAME port=$PORT object=$OBJECT";
+	object recorder {
+		property air_temperature;
+		interval 300;
+		file air_temperature.csv;
+	};
+}

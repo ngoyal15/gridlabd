@@ -15,8 +15,7 @@ EXPORT CLASS *init(CALLBACKS *fntable, MODULE *module, int argc, char *argv[])
 	}
 
 	try {
-		CLASS *first = (new house(module))->oclass;
-		new agent(module);
+		CLASS *first = (new interface(module))->oclass;
 		return first; /* always return the first class registered */
 	}
 	catch (const char *msg)

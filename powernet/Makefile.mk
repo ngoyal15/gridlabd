@@ -13,6 +13,7 @@ powernet_powernet_la_LDFLAGS += $(AM_LDFLAGS)
 powernet_powernet_la_LIBADD = 
 
 powernet_powernet_la_SOURCES = powernet/main.cpp
-powernet_powernet_la_SOURCES += powernet/agent.cpp powernet/agent.h
-powernet_powernet_la_SOURCES += powernet/house.cpp powernet/house.h
-powernet_powernet_la_SOURCES += powernet/message.cpp powernet/message.h
+powernet_powernet_la_SOURCES += powernet/interface.cpp powernet/interface.h
+#powernet_powernet_la_SOURCES += powernet/agent.cpp powernet/agent.h
+#powernet_powernet_la_SOURCES += powernet/building.cpp powernet/building.h
+#powernet_powernet_la_SOURCES += powernet/message.cpp powernet/message.h

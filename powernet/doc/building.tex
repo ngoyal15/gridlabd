@@ -1,0 +1,315 @@
+\documentclass[12pt,letterpaper,twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage[all,cmtip]{xy}
+
+\newcommand{\eq}[1]{\begin{align*}#1\end{align*}}
+\newcommand{\eqn}[2]{\begin{align}\label{eq:#1}#2\end{align}}
+\newcommand{\subeq}[1]{\begin{subequations}\eq{#1}\end{subequations}}
+\newcommand{\subeqn}[2]{\begin{subequations}\eqn{#1}{#2}\end{subequations}}
+\newcommand{\Matrix}[1]{\begin{bmatrix}#1\end{bmatrix}}	
+\newcommand{\Array}[2]{\begin{array}{#1}#2\end{array}}
+\newcommand{\Packed}[4]{\left[\begin{array}{c|c}{#1}&{#2}\\\hline{#3}&{#4}\end{}\right]}
+\newcommand{\Diagram}[4]{\begin{figure}[#1]\centerline{\xymatrix{#4}}\caption{#3}\label{fig:#2}\end{figure}}
+\renewcommand{\deg}[1]{$^\circ$#1}
+
+\author{David P. Chassin}
+
+\title{Powernet Building Model}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\Diagram{!b}{system}{Transactive control system diagram} 
+{
+		w \ar[rr]
+	&
+	&	*++[F]{Plant} 
+		\ar[rr]
+		\ar@<-0.2cm>`r[dr]`[d]^{u}[d]
+	&
+	&	z
+	\\
+	&	
+	&	*++[F]{Controller} 
+		\ar@<-0.2cm>`l[ul]`[u]^{y}[u]
+		\ar@<0.2cm>`l[dl]`[d]_{v}[d]
+	&
+	\\	p \ar[rr]
+	&
+	&	*++[F]{Agent}
+		\ar[rr]
+		\ar@<0.2cm>`r[ur]`[u]_{r}[u]
+	&
+	&	b
+}
+
+The powernet module plant model is an arbitrary order linear model, as shown in Figure~\ref{fig:system}, defined by the linear system
+\subeqn {fullmodel}
+{
+	\dot x &= A x + B_1 p + B_2 w
+\\
+	z &= C_1 x + D_{11} p + D_{12} w
+\\
+	b &= C_2 x + D_{21} p + D_{22} w	
+}
+or in standard form
+\eqn {stdmodel}
+{
+	\Matrix { \dot x \\ z \\ b } =
+	\left[ \begin{array}{c|c}
+		\Array{c}{A}
+	&	\Array{cc}{B_1 & B_2}
+	\\ \hline
+		\Array{c}{C_1 \\ C_2}
+	&	\Array{cc}{D_{11} & D_{12} \\ D_{21} & D_{22}}
+	\end{array} \right]
+	\Matrix { x \\ w \\ p }
+}
+where 
+\begin{itemize}
+
+\item $x$ is the internal state vector,
+
+\item $A$ is the plant response matrix, 
+
+\item $B_1$ is the market input matrix, 
+
+\item $p$ is the market input, 
+
+\item $B_2$ is the disturbance input matrix, 
+
+\item $w$ is the disturbance input, 
+
+\item $z$ is the performance metric output,
+
+\item $C_1$ is the performance output matrix,
+
+\item $C_2$ is the bid output matrix,
+
+\item $D_{11}$ is the feed-forward price performance matrix
+
+\item $D_{12}$ is the feed-forward disturbance performance matrix
+
+\item $D_{21}$ is the feed-forward price bid matrix
+
+\item $D_{22}$ is the feed-forward disturbance bid matrix
+
+
+\end{itemize}
+
+\subsection{Residential buildings}
+
+\Diagram{!b}{residential}{Residential thermal network diagram} 
+{
+	&	*+o[F]{T_A}
+			\ar@{-}[dd]_{U_M}
+			\ar@{=}[r]
+	&	*++[F]{C_A}
+\\		*+o[F]{T_O} 
+			\ar@{-}[ru]^{U_A}
+			\ar@{-}[rd]_{U_W}
+	&
+	&	*o[F]{} 
+			\ar[ld]_{K_M} 
+			\ar[lu]^{K_A}
+	&	Q
+			\ar@{-}[l]
+			%\ar`l/0pt[l]`_ul[llu][llu]
+			%\ar`l/0pt[l]`_dl[lld][lld]
+\\
+	&	*+o[F]{T_M}
+			\ar@{=}[r]
+	&	*++[F]{C_M}
+}
+
+We use the second-order thermal response model for a fully connect thermal network shown in Figure~\ref{fig:residential}.
+\subeqn {residential_thermal_model} 
+{
+	U_A(T_O-T_A) + U_M(T_M-T_A)-C_A\dot T_A + n Q_N + K_1 Q_I + K_2 Q_S &= 0
+\\
+	U_M(T_A-T_M) + U_W(T_O-T_M)-C_M\dot T_M + K_3 Q_I + K_4 Q_S &= 0
+}
+where
+\begin{itemize}
+
+\item $U_A$ is the conductivity of the exterior envelope to the indoor air (in W/\deg K),
+
+\item $T_O$ is the outdoor air temperature (in \deg C),
+
+\item $T_A$ is the indoor air temperature (in \deg C),
+
+\item $U_M$ is the conductivity of the building mass to the indoor air (in W/\deg K),
+
+\item $T_M$ is the building mass temperature (in \deg C),
+
+\item $C_A$ is the thermal capacity of the indoor air (in J/\deg K),
+
+\item $n$ is the number of occupants (pu adults),
+
+\item $Q_N$ is the heat gain from a single occupant in (in W/adult), 
+
+\item $K_1$ is the fraction of internal heat gain that goes to the indoor air,
+
+\item $Q_I$ is the internal heat gain (in W)
+
+\item $K_2$ is the fraction of system heat that goes to the air,
+
+\item $Q_S$ is the system power (in W),
+
+\item $U_W$ is the conductivity of the building mass to the outdoor air (in W/\deg K)
+
+\item $C_M$ is the thermal capacity of the building mass (in J/deg K), 
+
+\item $K_3$ is the fraction of internal heat gain that goes to the building mass, and
+
+\item $K_4$ is the fraction of system heat that goes to the building mass.
+
+\end{itemize}
+The internal heat gains are computed as 
+\eq 
+{
+	Q_I &= P_A + \eta_I P_I
+}
+and the system heat gains are
+\eq 
+{
+	Q_S &= m_e \eta_E P_S  + m_g \eta_H P_H
+}
+where
+\begin{itemize}
+
+\item $P_A$ is the electric power demand for all indoor appliances in (in W),
+
+\item $\eta_G$ is the thermal heat for one unit of gas (in W/kg),
+
+\item $P_I$ is the gas usage for all indoor appliances (in kg),
+
+\item $m_e$ is the electric system mode (pu $Q_E$),
+
+\item $m_g$ is the gas system mode (pu $Q_H$),
+
+\item $\eta_E$ is the electric system efficiency (pu $P_S$),
+
+\item $P_S$ is the electric system power demand (in W),
+
+\item $\eta_I$ is the gas impact factor (pu $P_I$), and
+
+\item $\eta_H$ is the gas heating efficiency (pu $P_H$), and
+
+\item $P_H$ is the gas system consumption (in kg).
+
+\end{itemize}
+We rewrite (\ref{eq:residential_thermal_model}) as
+\subeqn {residentialmodel} 
+{
+	\dot T_A = & -\frac{U_A+U_M}{C_A} T_A + \frac{U_M+U_W}{C_A} T_M + \frac{U_A}{C_A} T_O + nQ_N
+		\\ & + \frac{K_A}{C_A}(P_A+n_G\eta_IP_I+m_E\eta_EP_S+m_G\eta_HP_H)
+\\
+	\dot T_M = & -\frac{U_M+U_W}{C_M} T_M + \frac{U_W}{C_M} T_O 
+		\\ & + \frac{K_M}{C_M}(P_A+n_G\eta_IP_I+m_E\eta_EP_S+m_G\eta_HP_H)
+}
+with the total consumptions
+\subeqn {residentialuse} 
+{
+	P_E &= P_A + P_S
+\\
+	P_G &= P_I + P_H.
+}
+The output bid price of electricity is 
+\eq {
+	b = k (T_A-T_D)
+}
+where 
+\begin{itemize}
+\item $k$ is the comfort setting, and 
+\item $T_D$ is the desired indoor air temperature.
+\end{itemize}
+The output indoor temperature setpoint is
+\eq {
+	T_S = \frac{1}{k} p + T_D
+}
+where $p$ is the input price of electricity. The total costs of electric and gas consumption are
+\subeqn {residentialcost}
+{
+	C_E &= p P_E
+\\
+	C_G &= g P_G,
+}
+respectively, where $g$ is the price of gas.
+
+We now construct the system model for Eq.~(\ref{eq:stdmodel}) as follows. The state, input and output vectors are
+\eq {
+	x &= \Matrix { T_A \\ T_M }
+&
+	w &= \Matrix {T_O \\ n \\ m_e \\ m_g \\ P_A \\ P_I \\ T_D }
+&
+	z &= \Matrix { C_T \\ C_E \\ C_G },
+}
+where $C_T$ is the utility of comfort.
+The system matrices for Eq.~(\ref{eq:stdmodel}) are
+\eq {
+		A &= \Matrix {
+			-\frac{U_A+U_M}{C_A} & \frac{U_M+U_W}{C_A} 
+		\\
+			\frac{U_M}{C_M} & -\frac{U_M+U_W}{C_M} 
+		}
+	&
+		B_1 &= \Matrix { 
+			\frac{U_A}{C_A} & Q_N & \frac{K_A \eta_E P_S}{C_A} & \frac{K_A \eta_H P_H}{C_A} & \frac{K_A}{C_A} & \frac{K_A \eta_G}{C_A} & 0
+		\\
+			\frac{U_W}{C_M} & 0 & \frac{K_M \eta_E P_S}{C_M} & \frac{K_M \eta_H P_H}{C_M} & \frac{K_M}{C_M} & \frac{K_M \eta_G}{C_M} & 0
+		}
+	&
+		B_2 & = \Matrix {
+			0
+		\\
+			0
+		}
+	\\
+		C_1 & = \Matrix {
+			k & 0
+	\\
+			0 & 0
+	\\
+		 	0 & 0
+		}
+	&
+		D_{11} & = \Matrix {
+			0 & 0 & 0 & 0 & 0 & 0 & -k
+	\\
+			0 & 0 & pP_S & 0 & p & 0 & 0
+	\\
+		 	0 & 0 & 0 & gP_H & 0 & g & 0
+		}
+	&
+		D_{12} & = \Matrix {
+			-1
+	\\
+			0
+	\\
+			0
+		}
+	\\
+		C_2 & = \Matrix {
+			k & 0
+		}
+	&
+		D_{21} & = \Matrix {
+			0 & 0 & 0 & 0 & 0 & 0 & -k
+		}
+	&
+		D_{22} & = \Matrix {
+			0
+		}
+}
+
+\end{document}

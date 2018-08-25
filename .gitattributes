@@ -1,5 +1,5 @@
 # Set default line endings for text files to be lf
-* text eol=lf
+* text=auto
 
 # Denote all files that are truly binary and should not be modified
 *.d binary
@@ -44,3 +44,9 @@
 *.doc binary
 *.xls binary
 *.xlsx binary
+
+# make sure certain files are text
+*.c text
+*.h text
+*.cpp text
+*.csv text

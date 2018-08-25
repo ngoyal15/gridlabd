@@ -600,6 +600,31 @@ AC_SUBST([MYSQL_CPPFLAGS])
 AC_SUBST([MYSQL_LDFLAGS])
 AC_SUBST([MYSQL_LIBS])
 
+# Check for python
+
+AC_ARG_WITH([python],
+    [AS_HELP_STRING([--with-python],
+        [Link to Python from a given prefix (=path)])],
+    [],
+    [with_mysql=no])
+PYTHON=$with_python
+AS_IF([test "x$PYTHON" != "xno"],
+    [PYTHON_CPPFLAGS="'-I$PYTHON/include'"
+        AS_CASE([$host],
+            [*mingw*], [PYTHON_LDFLAGS="'-L$PYTHON/lib'"
+                PYTHON_LIBS="-lpython"],
+            [*linux*], [PYTHON_LDFLAGS="'-L$PYTHON/lib'"
+                PYTHON_LIBS="-lpython"],
+            [*darwin*], [PYTHON_LDFLAGS="'-L$PYTHON/lib'"
+                PYTHON_LIBS="-ldl -lreadline -ltermcap -lpthread -lutil -Xlinker -lm"])
+        GLD_CPPFLAGS="$GLD_CPPFLAGS -DHAVE_PYTHON $PYTHON_CPPFLAGS"
+        GLD_LDFLAGS="$GLD_LDFLAGS -lpython $PYTHON_LIBS"
+        HAVE_PYTHON=yes],
+    [HAVE_PYTHON=no])
+AC_SUBST([PYTHON_CPPFLAGS])
+AC_SUBST([PYTHON_LDFLAGS])
+AC_SUBST([PYTHON_LIBS])
+
 ###############################################################################
 # The End
 ###############################################################################
@@ -634,6 +659,7 @@ AC_MSG_RESULT([
     libxerces-c: ................ $HAVE_XERCES
     matlab: ..................... $HAVE_MATLAB
     mysql-connector-c: .......... $HAVE_MYSQL
+    python: ..................... $HAVE_PYTHON
     curses: ..................... $HAVE_CURSES
 
   Atomic Builtins:

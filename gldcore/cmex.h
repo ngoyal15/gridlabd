@@ -80,7 +80,7 @@ typedef struct {
 } PROPERTY;
 
 #include "market.h"
-#include "house.h"
+#include "../powernet/building.h"
 #include "solvers.h"
 
 #endif
