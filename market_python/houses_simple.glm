@@ -1,0 +1,58 @@
+module residential {
+          implicit_enduses NONE;
+ //         default_outdoor_temperature 68 degF;
+     };
+
+module generators;
+
+// House # 1  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+//enhancement for house class - should later be defined in HH
+class house {
+	double k;
+	char8 control_type;
+}
+
+object triplex_line {
+	from Node1;
+	to node1_meter_H1;
+	phases AS;
+	length 30 ft;
+	configuration triplex_line_config;
+	}
+
+object triplex_meter {
+	name node1_meter_H1;
+	phases AS;
+	nominal_voltage 120;
+	object house{
+		name node1_House1;
+		floor_area 2500;
+		number_of_stories 1;
+		cooling_system_type ELECTRIC;
+		heating_system_type RESISTANCE;
+		thermostat_control NONE;
+		//system_mode OFF;
+		airchange_per_hour 0.51;
+		air_temperature 75 degF;
+		Rdoors 5;
+		Rfloor 22;
+		Rroof 30;
+		Rwall 19;
+		//k 2;
+		dlc_offset 0.0; //????
+		override OFF; //????
+		object recorder {
+			property total_load,air_temperature,outdoor_temperature;
+			interval 300;
+			file H1_temperature.csv;
+		};
+	};
+	bill_mode HOURLY;
+	power_market retail;
+	object recorder {
+		property measured_real_power, measured_reactive_power, price;
+		interval 300;
+		file H1_power.csv;
+	};
+}

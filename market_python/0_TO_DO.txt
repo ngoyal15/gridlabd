@@ -1,0 +1,48 @@
+TO DO
+
+- include mysql into data exchange
+
+Home Hub
+- Check how to handle global variable from home hub in line with GLM model / later changes--> changing my msql
+- Check why price is only committed in next (+5min) period to billing meter
+
+Bidding functions
+X CHECK WHY SYSTEM CONTROL FOR HVAC IS NOT WORKING
+X Implement transactive bidding function for HVAC
+x Check with David if transactive implementation for HVAC is IC and how q adds up over appliances and bidders
+- Check if HVAC system in transactive control is indeed inactive if not awarded (and T_set is set higher)
+- Implement bidding function for battery
+X Include heating
+
+Houses
+- Check billing
+x Upload Lily's new player files
+- Can I define house class enhancement i main.glm?
+	//enhancement for house class - should later be defined in HH
+class house {
+	double k;
+	char8 control_type;
+	char8 bid_mode;
+	boolean state;
+	double T_c_set_0;
+	double T_h_set_0;
+	double T_max;
+	double T_min;
+	double m;
+	double n;
+	double p_bid;
+	double q_bid;
+}
+
+Wholesale market
+- Include player for historical wholesale market prices
+- Include player with forward market prices
+- Include zip loads/ unresponsive load into market (how to deal with non-allocated HVACs?)
+
+Retail market
+x Include unresponsive loads into bidding structure
+- Validate unresponsive loads
+X Go through test cases for John
+- Write object and function to store average prices and variance (filter)
+- Correct distribution of surplus
+- Correct sloped functions and market clearing

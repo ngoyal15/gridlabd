@@ -1,0 +1,23 @@
+module residential;
+#set suppress_repeat_messages=0
+module tape;
+
+clock {
+starttime '2000-01-01 00:00:00';
+stoptime '2000-01-01 01:00:00';
+}
+object house {
+	name house_1;
+	on_init "echo init clock=$CLOCK";
+	on_precommit "echo precommit clock=$CLOCK";
+	on_presync "echo presync clock=$CLOCK";
+	on_sync "echo sync clock=$CLOCK";
+	on_postsync "echo postsync clock=$CLOCK";
+	on_commit "echo commit clock=$CLOCK";
+	on_finalize "echo finalize clock=$CLOCK";
+	object recorder {
+		property air_temperature;
+		interval 300;
+		file air_temperature.csv;
+};
+

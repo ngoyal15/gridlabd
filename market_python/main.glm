@@ -1,0 +1,67 @@
+// enable server for python data access
+#option server 
+
+clock {
+	timezone EST+5EDT;
+	starttime '2017-07-01 12:00:00';
+	stoptime '2017-07-01 12:59:59';
+	}
+
+module tape;
+
+
+module climate;
+object climate {
+	name test_weather;
+	tmyfile "724940TYA.tmy3";
+	interpolate LINEAR;
+}
+
+// Market --------------------------------------------------------
+class market {
+	int32 interval;
+	double price[$/MWh];
+	double mean_p;
+	double var_p;
+}
+
+object market {
+	name retail;
+	interval 300;
+	//valid_to 300;
+	on_precommit "python ./gld_precommit_market.py";
+	object recorder {
+		name retail_recorder;
+		property price, mean_p, var_p;
+		file retail_market.csv;
+		interval 300;
+	};
+}
+
+//Filter for mean price
+filter FIR1(z,5min) = (.0833+ .0833 z+ .0833 z^2+ .0833 z^3+ .0833 z^4+ .0833 z^5+ .0833 z^6+ .0833 z^7+ .0833 z^8+ .0833 z^9 + .0833 z^10+ .0833 z^11)/(z^12);
+filter FIR2(z,60min) = (.04167+.04167 z+.04167 z^2+.04167 z^3+.04167 z^4+ .04167 z^5+.04167 z^6+.04167 z^7+.04167 z^8+.04167 z^9+ .04167 z^10+.04167 z^11+.04167 z^12+.04167 z^13+.04167 z^14+ .04167 z^15+.04167 z^16+.04167 z^17+ .04167 z^18+.04167 z^19+.04167 z^20+.04167 z^21+.04167 z^22+ .04167 z^23)/(z^24);
+
+class FIR1_filter {
+	double value1;
+}
+
+class FIR2_filter {
+	double value2;
+}
+
+object FIR1_filter {
+	name FIR1_filter;
+	value1 FIR1(retail:price);
+}
+
+object FIR2_filter {
+	name FIR2_filter;
+	value2 FIR2(FIR1_filter:value1);
+}
+
+#include "IEEE123_BP_2bus.glm";
+
+//Run time
+script export clock;
+script on_init python ./gld_init_houses.py;
