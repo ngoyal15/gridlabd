@@ -3871,11 +3871,32 @@ static int transform_source(PARSER, TRANSFORMSOURCE *xstype, void **source, OBJE
 	DONE;
 }
 
-static int filter_transform(PARSER, TRANSFORMSOURCE *xstype, char *sources, size_t srcsize, char *filtername, size_t namesize, OBJECT *from)
+static int filter_complexify(PARSER, TRANSFORMSOURCE *xstype, char *sources, size_t srcsize, char *filtername, size_t namesize, OBJECT *from)
 {
-	REJECT;
+	char fncname[1024];
+	char varlist[4096];
+	START;
+	if ( TERM(name(HERE,fncname,sizeof(fncname))) && (WHITE,LITERAL("(")) && (WHITE,TERM(property_list(HERE,varlist,sizeof(varlist)))) && LITERAL(")") )
+	{
+		if ( strlen(fncname)<namesize && strlen(varlist)<srcsize )
+		{
+			strcpy(filtername,fncname);
+			strcpy(sources,varlist);
+			ACCEPT;
+		}
+		else
+		{
+			output_error_raw("%s(%d): filter name/input too long",filename,linenum);
+			REJECT;
+		}
+	}
+	else
+	{
+		REJECT;
+	}
 	DONE;
 }
+
 static int filter_transform(PARSER, TRANSFORMSOURCE *xstype, char *sources, size_t srcsize, char *filtername, size_t namesize, OBJECT *from)
 {
 	char fncname[1024];
