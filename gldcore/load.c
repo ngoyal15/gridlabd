@@ -3873,6 +3873,11 @@ static int transform_source(PARSER, TRANSFORMSOURCE *xstype, void **source, OBJE
 
 static int filter_transform(PARSER, TRANSFORMSOURCE *xstype, char *sources, size_t srcsize, char *filtername, size_t namesize, OBJECT *from)
 {
+	REJECT;
+	DONE;
+}
+static int filter_transform(PARSER, TRANSFORMSOURCE *xstype, char *sources, size_t srcsize, char *filtername, size_t namesize, OBJECT *from)
+{
 	char fncname[1024];
 	char varlist[4096];
 	START;
@@ -4309,6 +4314,17 @@ static int object_properties(PARSER, CLASS *oclass, OBJECT *obj)
 						first_unresolved->ref = (void*)transform_getnext(NULL);
 
 					ACCEPT;
+				}
+			}
+			else if ( prop!=NULL && prop->ptype==PT_complex && TERM(filter_complexify(HERE, &xstype, sources, sizeof(source), transformname, sizeof(transformname), obj)))
+			{
+				if ( strcmp(transformname,"complex_rect")==0 )
+				{
+					// TODO complex rectangular
+				}
+				else if ( strcmp(transformname,"complex_polar")==0 )
+				{
+					// TODO complex polar
 				}
 			}
 			else if TERM(alternate_value(HERE,propval,sizeof(propval)))
