@@ -32,6 +32,9 @@ pole::pole(MODULE *mod) : node(mod)
 			PT_object, "configuration", PADDR(configuration), PT_DESCRIPTION, "configuration data",
 			PT_double, "equipment_area[sf]", PADDR(equipment_area), PT_DESCRIPTION, "equipment cross sectional area",
 			PT_double, "equipment_height[ft]", PADDR(equipment_height), PT_DESCRIPTION, "equipment height on pole",
+			PT_double, "fragility_metric", PADDR(fragility_metric), PT_DESCRIPTION, "the metric of how the vulnerable the pole is",
+			PT_double, "wind_pressure", PADDR(wind_pressure), PT_DESCRIPTION, "wind pressure on the pole",
+			PT_double, "wind_speed", PADDR(wind_speed), PT_DESCRIPTION, "wind speed",
 			NULL) < 1 ) throw "unable to publish properties in " __FILE__;
 	}
 }
@@ -192,7 +195,8 @@ TIMESTAMP pole::presync(TIMESTAMP t0)
 			wire_moment += tension;
 		}
 		double total_moment = pole_moment + equipment_moment + wire_moment;
-		verbose("wind %4.1f psi, pole %4.0f ft*lb, equipment %4.0f ft*lb, wires %4.0f ft*lb, margin %.0f%%", (const char*)(dt.get_string()), wind_pressure, pole_moment, equipment_moment, wire_moment, total_moment/resisting_moment*100);
+		fragility_metric = total_moment/resisting_moment*100;
+		verbose("wind %4.1f psi, pole %4.0f ft*lb, equipment %4.0f ft*lb, wires %4.0f ft*lb, margin %.0f%%", (const char*)(dt.get_string()), wind_pressure, pole_moment, equipment_moment, wire_moment, fragility_metric);
 		pole_status = ( total_moment < resisting_moment ? PS_OK : PS_FAILED );
 		if ( pole_status == PS_FAILED )
 		{

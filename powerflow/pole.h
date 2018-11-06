@@ -45,6 +45,9 @@ public:
 	object configuration;
 	double equipment_area;		// (see Section E)
 	double equipment_height;	// (see Section E)
+	double fragility_metric;
+	double wind_pressure;		// (see Section D)
+	double *wind_speed;
 private:
 	double ice_thickness;
 	double wind_loading;
@@ -53,14 +56,13 @@ private:
 	double equipment_moment;	// (see Section E)
 	double wire_load;		// (see Section F)
 	double wire_moment;		// (see Section F)
-	double wind_pressure;		// (see Section D)
 	double wire_tension;	// (see Section G)
 	object cable_configuration;
 	bool is_deadend;
 private:
 	pole_configuration *config;
 	double last_wind_speed;
-	double *wind_speed;
+//	double *wind_speed;
 	double *wind_direction;
 	double *wind_gust;
 	WIREDATA *wire_data;
