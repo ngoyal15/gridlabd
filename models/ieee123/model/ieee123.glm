@@ -10,9 +10,13 @@
 // Read the configuration file for this system
 // Assumes the model is run from parent of model folder
 //
+#ifdef CONFIGFILE
+#include "${CONFIGFILE}"
+#else // !CONFIGFILE
 #ifexist config/local.glm
 #include "config/local.glm"
 #endif // exist local.glm
+#endif // !CONFIGFILE
 
 //
 // Check the configuration
@@ -51,17 +55,19 @@
 #set run_realtime=1 // tells the server to run in realtime mode
 
 #set server_portnum=${PORT} // is the port that clients will connect to
-#endif // STOPTIME
-#endif // STARTTIME
+#endif // !STOPTIME
+#endif // !STARTTIME
 
 #ifdef TIMEZONE
 clock {
 	timezone ${TIMEZONE};
 #ifdef STARTTIME
-	starttime ${STARTTIME};
+#print starttime '${STARTTIME//"/}'
+	starttime '${STARTTIME//"/}';
 #endif
 #ifdef STOPTIME
-	stoptime ${STOPTIME};
+#print stoptime '${STOPTIME}'
+	stoptime '${STOPTIME}';
 #endif
 }
 #else
@@ -143,12 +149,12 @@ object currdump {
 
 module mysql {
 	hostname "${MYSQLHOST}";
-	username "gridlabd";
-	password "gridlabd";
+	username "${MYSQLUSER:-gridlabd}";
+	password "${MYSQLPWD:-gridlabd}";
 #ifdef SOCKETNAME
-	socketname "${SOCKETNAME}";
+	socketname "${SOCKETNAME:-/tmp/mysql.sock}";
 #else
-	port 3306;	
+	port ${MYSQLPORT:-3306};	
 #endif // SOCKETNAME
 }
 
