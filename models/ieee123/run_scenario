@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+	echo "Syntax: $0 scenario-name [options...]"
+	exit 1
+elif [ "$1" == "-h" -o "$1" == "--help" ]; then
+	echo "Syntax: $0 scenario-name [options...]"
+	exit 0
+fi
+SCENARIO=$1
+shift
+echo "Options: $*"
+gridlabd -D CONFIGFILE=config/$SCENARIO.glm $* model/ieee123.glm 

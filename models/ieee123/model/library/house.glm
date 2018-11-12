@@ -50,11 +50,9 @@ object recorder {
 #ifndef XLOAD
 #define XLOAD=yes
 #endif // XLOAD
-#ifdef PVPROB
-class solar {
+class inverter {
 	double installed;
 }
-#endif // PVPROB
 #endif // SOLAR
 
 #ifdef XLOAD
@@ -105,6 +103,8 @@ object triplex_meter:..${COUNT} {
 		generator_status ONLINE;
 		inverter_efficiency 0.9;
 		inverter_type PWM;
+		installed random.bernoulli(${PVPROB:-1.0});
+		generator_status ($installed) ? ONLINE : OFFLINE; 
 		object solar {
 			name `solar_{SEQ_CUSTID}`;
 			phases ${PHASE}S;
@@ -113,13 +113,8 @@ object triplex_meter:..${COUNT} {
 #else
 			area ${PVAREA};
 #endif // PVAREA
-#ifndef PVPROB
-			generator_status ONLINE;
-#else
-			installed random.bernoulli(${PVPROB});
-			generator_status ($installed) ? OFFLINE : ONLINE; 
-#endif // PVPROB
 			generator_mode SUPPLY_DRIVEN;
+			generator_status ONLINE; 
 			panel_type SINGLE_CRYSTAL_SILICON;
 #ifdef MYSQL_ENABLE
 #ifdef MYSQL_AMI
@@ -138,7 +133,7 @@ object triplex_meter:..${COUNT} {
 		object recorder {
 			connection ami;
 			table inverter;
-			property "VA_Out";
+			property "VA_Out,installed,generator_status";
 			interval 60;
 			header_fieldnames "name";
 		};

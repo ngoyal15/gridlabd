@@ -18,6 +18,8 @@ object transformer_configuration {
 global int32 SEQ_CUSTID 0;
 #set allow_reinclude=true
 
+#print PV peneration is ${PVPROB:-1.0}
+
 #include using(AREA=A,LOADID=1,PHASE=A,COUNT=4) "model/library/house.glm"
 #include using(AREA=A,LOADID=2,PHASE=B,COUNT=2) "model/library/house.glm"
 #include using(AREA=A,LOADID=4,PHASE=C,COUNT=4) "model/library/house.glm"

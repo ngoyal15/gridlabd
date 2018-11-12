@@ -62,12 +62,10 @@
 clock {
 	timezone ${TIMEZONE};
 #ifdef STARTTIME
-#print starttime '${STARTTIME//"/}'
-	starttime '${STARTTIME//"/}';
+	starttime ${STARTTIME};
 #endif
 #ifdef STOPTIME
-#print stoptime '${STOPTIME}'
-	stoptime '${STOPTIME}';
+	stoptime ${STOPTIME};
 #endif
 }
 #else
