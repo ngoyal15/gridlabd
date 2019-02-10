@@ -1,11 +1,7 @@
 
-#include <pthread.h>
-#include "gridlabd.h"
-#include <Python.h>
-#include "cmdarg.h"
-#include "load.h"
-#include "exec.h"
-#include "save.h"
+#include "GldObject.h"
+
+extern PyTypeObject GldObject_Type;
 
 static PyObject *gridlabd_exception(const char *format, ...);
 
@@ -265,9 +261,10 @@ PyMODINIT_FUNC PyInit_gridlabd(void)
     PyModule_AddObject(this_module,"NEVER",PyLong_FromLong(TS_NEVER));
     PyModule_AddObject(this_module,"INVALID",PyLong_FromLong(TS_INVALID));
 
-    //PyModule_AddObject(this_module,"GldObject",gridlabd_class_create(&this_module));
-
-    return this_module;
+    if ( GldObject_addtype(this_module) )
+        return NULL;
+    else
+        return this_module;
 }
 
 static PyObject *gridlabd_exception(const char *format, ...)

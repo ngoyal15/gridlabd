@@ -1,5 +1,6 @@
 def on_init(t) :
 	print("timestamp,x")
+	
 	return True
 
 def on_sync(t) :

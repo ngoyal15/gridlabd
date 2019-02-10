@@ -1,194 +1,222 @@
 /* GldObject is the base class used to define new classes in the gridlabd python module */
 
-#include "Python.h"
+#include "GldObject.h"
 
-static PyObject *ErrorObject;
+// base type static allocation
+static PyTypeObject GldObject_Type;
 
-typedef struct {
-    PyObject_HEAD
-    OBJECT header;
-} GldObject;
-
-static PyTypeObject Gld_Type;
-
-#define GldObject_Check(v)      (Py_TYPE(v) == &Gld_Type)
-
-static GldObject *
-newGldObject(PyObject *arg)
+// module add type
+int GldObject_addtype(PyObject *module)
 {
-    GldObject *self = PyObject_New(GldObject, &Gld_Type);
-    if (self == NULL)
-        return NULL;
-    self->obj = NULL;
-    return self;
+    if ( PyType_Ready(&GldObject_Type) )
+        return -1;
+    if ( PyModule_AddObject(module,"GldObject",&GldObject_Type))
+        return -1;
+    return 0;
 }
 
-/* Gld methods */
+// type methods
+static PyObject *GldObject_exception(PyObject *self, PyObject *args)
+{
+    char *text;
+    if ( ! PyArg_ParseTuple(args,"s",&text) )
+        return NULL;
+    THROW("%s",text);
+    Py_UNREACHABLE();
+}
 
-static void
-Gld_dealloc(GldObject *self)
+static PyObject *GldObject_error(PyObject *self, PyObject *args)
+{
+    char *text;
+    if ( ! PyArg_ParseTuple(args,"s",&text) )
+        return NULL;
+    return PyLong_FromLong(output_error("%s",text));
+}
+
+static PyObject *GldObject_output(PyObject *self, PyObject *args)
+{
+    char *text;
+    if ( ! PyArg_ParseTuple(args,"s",&text) )
+        return NULL;
+    return PyLong_FromLong(output_message("%s",text));
+}
+
+static PyObject *GldObject_warning(PyObject *self, PyObject *args)
+{
+    char *text;
+    if ( ! PyArg_ParseTuple(args,"s",&text) )
+        return NULL;
+    return PyLong_FromLong(output_warning("%s",text));
+}
+
+static PyObject *GldObject_debug(PyObject *self, PyObject *args)
+{
+    char *text;
+    if ( ! PyArg_ParseTuple(args,"s",&text) )
+        return NULL;
+    return PyLong_FromLong(output_debug("%s",text));
+}
+
+static PyObject *GldObject_get_name(PyObject *self, PyObject *args)
+{
+    // TODO
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *GldObject_get_class(PyObject *self, PyObject *args)
+{
+    // TODO
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyObject *GldObject_get_id(PyObject *self, PyObject *args)
+{
+    // TODO
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+static PyMethodDef GldObject_tp_methods[] = {
+	// output streams
+    {"exception", (PyCFunction)GldObject_exception, METH_VARARGS, PyDoc_STR("Raise an exception")},
+    {"error", (PyCFunction)GldObject_error, METH_VARARGS, PyDoc_STR("Output an object error message")},
+    {"warning", (PyCFunction)GldObject_warning, METH_VARARGS, PyDoc_STR("Output an object warning message")},
+    {"output", (PyCFunction)GldObject_output, METH_VARARGS, PyDoc_STR("Output an object message")},
+    {"debug", (PyCFunction)GldObject_debug, METH_VARARGS, PyDoc_STR("Output an object debug message")},
+    // header access
+    {"get_name", (PyCFunction)GldObject_get_name, METH_VARARGS, PyDoc_STR("Get object name")},
+    {"get_class", (PyCFunction)GldObject_get_class, METH_VARARGS, PyDoc_STR("Get object class")},
+    {"get_id", (PyCFunction)GldObject_get_id, METH_VARARGS, PyDoc_STR("Get object id")},
+    // property access
+    {NULL, NULL} /* sentinel */
+};
+
+// type functions
+static PyObject *GldObject_tp_new(PyObject *arg)
+{
+    GldObject *self = PyObject_New(GldObject, &GldObject_Type);
+    if (self == NULL)
+        return NULL;
+    // TODO
+    self->obj = NULL;
+    return (PyObject*)self;
+}
+
+static int GldObject_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
+{
+    // TODO
+    return 0;
+}
+
+static void GldObject_tp_dealloc(GldObject *self)
 {
     PyObject_Del(self);
 }
 
-static PyObject *
-Gld_getname(GldObject *self, PyObject *args)
+static PyObject *GldObject_tp_repr(GldObject *self)
 {
-    Py_INCREF(Py_None);
-    return Py_None;
+    if ( self->obj )
+    {
+        char buffer[1024];
+        snprintf(buffer,sizeof(buffer),"<%s:%d>",self->obj->oclass->name,self->obj->id);
+        return Py_BuildValue("s",buffer);
+    }
+    else
+    {
+        char buffer[1024];
+        snprintf(buffer,sizeof(buffer),"<unlinked GldObject at 0x%08x>",self);
+        return Py_BuildValue("s",buffer);
+    }
 }
 
-static PyMethodDef Gld_methods[] = {
-    {"demo",            (PyCFunction)Gld_demo,  METH_VARARGS,
-        PyDoc_STR("demo() -> None")},
-    {NULL,              NULL}           /* sentinel */
-};
-
-static PyObject *
-Gld_getattro(GldObject *self, PyObject *name)
+static PyObject *GldObject_tp_getattro(PyObject *self, PyObject *name)
 {
-    if (self->x_attr != NULL) {
-        PyObject *v = PyDict_GetItem(self->x_attr, name);
-        if (v != NULL) {
-            Py_INCREF(v);
-            return v;
-        }
-    }
+    // TODO
+    // if (self->x_attr != NULL) {
+    //     PyObject *v = PyDict_GetItem(self->x_attr, name);
+    //     if (v != NULL) {
+    //         Py_INCREF(v);
+    //         return v;
+    //     }
+    // }
     return PyObject_GenericGetAttr((PyObject *)self, name);
 }
 
-static int
-Gld_setattr(GldObject *self, const char *name, PyObject *v)
+static int GldObject_tp_setattr(GldObject *self, const char *name, PyObject *v)
 {
-    if (self->x_attr == NULL) {
-        self->x_attr = PyDict_New();
-        if (self->x_attr == NULL)
-            return -1;
-    }
-    if (v == NULL) {
-        int rv = PyDict_DelItemString(self->x_attr, name);
-        if (rv < 0)
-            PyErr_SetString(PyExc_AttributeError,
-                "delete non-existing Gld attribute");
-        return rv;
-    }
-    else
-        return PyDict_SetItemString(self->x_attr, name, v);
+    // TODO
+    // if (self->x_attr == NULL) {
+    //     self->x_attr = PyDict_New();
+    //     if (self->x_attr == NULL)
+    //         return -1;
+    // }
+    // if (v == NULL) {
+    //     int rv = PyDict_DelItemString(self->x_attr, name);
+    //     if (rv < 0)
+    //         PyErr_SetString(PyExc_AttributeError,
+    //             "delete non-existing Gld attribute");
+    //     return rv;
+    // }
+    // else
+    //     return PyDict_SetItemString(self->x_attr, name, v);
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
-static PyTypeObject Gld_Type = {
-    /* The ob_type field must be initialized in the module init function
-     * to be portable to Windows without using C++. */
+static int GldObject_tp_is_gc(PyObject *self)
+{
+    return 0;
+}
+
+PyObject *GldObject_tp_alloc(PyTypeObject *self, Py_ssize_t nitems)
+{
+    // TODO
+    return (PyObject*) malloc(sizeof(GldObject_Type)*nitems);
+}
+
+// module type definition
+static PyTypeObject GldObject_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "gridlabd.GldObject",       /*tp_name*/
-    sizeof(GldObject),          /*tp_basicsize*/
-    0,                          /*tp_itemsize*/
+    "GldObject",       		            /*tp_name*/
+    sizeof(GldObject),          		/*tp_basicsize*/
+    0,                          		/*tp_itemsize*/
     /* methods */
-    (destructor)Gld_dealloc,    /*tp_dealloc*/
-    0,                          /*tp_print*/
-    (getattrfunc)0,             /*tp_getattr*/
-    (setattrfunc)Gld_setattr,   /*tp_setattr*/
-    0,                          /*tp_reserved*/
-    0,                          /*tp_repr*/
-    0,                          /*tp_as_number*/
-    0,                          /*tp_as_sequence*/
-    0,                          /*tp_as_mapping*/
-    0,                          /*tp_hash*/
-    0,                          /*tp_call*/
-    0,                          /*tp_str*/
-    (getattrofunc)Gld_getattro, /*tp_getattro*/
-    0,                          /*tp_setattro*/
-    0,                          /*tp_as_buffer*/
-    Py_TPFLAGS_DEFAULT,         /*tp_flags*/
-    0,                          /*tp_doc*/
-    0,                          /*tp_traverse*/
-    0,                          /*tp_clear*/
-    0,                          /*tp_richcompare*/
-    0,                          /*tp_weaklistoffset*/
-    0,                          /*tp_iter*/
-    0,                          /*tp_iternext*/
-    Gld_methods,                /*tp_methods*/
-    0,                          /*tp_members*/
-    0,                          /*tp_getset*/
-    0,                          /*tp_base*/
-    0,                          /*tp_dict*/
-    0,                          /*tp_descr_get*/
-    0,                          /*tp_descr_set*/
-    0,                          /*tp_dictoffset*/
-    0,                          /*tp_init*/
-    0,                          /*tp_alloc*/
-    0,                          /*tp_new*/
-    0,                          /*tp_free*/
-    0,                          /*tp_is_gc*/
+    GldObject_tp_dealloc,    	        /*tp_dealloc*/
+    0,                          		/*tp_print*/
+    0,             		                /*tp_getattr*/
+    GldObject_tp_setattr,   	        /*tp_setattr*/
+    0,                          		/*tp_reserved*/
+    GldObject_tp_repr,                  /*tp_repr*/
+    0,                          		/*tp_as_number*/
+    0,                          		/*tp_as_sequence*/
+    0,                          		/*tp_as_mapping*/
+    0,                          		/*tp_hash*/
+    0,                          		/*tp_call*/
+    0,                          		/*tp_str*/
+    GldObject_tp_getattro,	            /*tp_getattro*/
+    0,                          		/*tp_setattro*/
+    0,                          		/*tp_as_buffer*/
+    Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /*tp_flags*/
+    0,                          		/*tp_doc*/
+    0,                          		/*tp_traverse*/
+    0,                          		/*tp_clear*/
+    0,                          		/*tp_richcompare*/
+    0,                          		/*tp_weaklistoffset*/
+    0,                          		/*tp_iter*/
+    0,                          		/*tp_iternext*/
+    GldObject_tp_methods,               /*tp_methods*/
+    0,                          		/*tp_members*/
+    0,                          		/*tp_getset*/
+    0,                          		/*tp_base*/
+    0,                          		/*tp_dict*/
+    0,                          		/*tp_descr_get*/
+    0,                          		/*tp_descr_set*/
+    0,                          		/*tp_dictoffset*/
+    GldObject_tp_init,                  /*tp_init*/
+    GldObject_tp_alloc,                 /*tp_alloc*/
+    GldObject_tp_new,                   /*tp_new*/
+    0,                          		/*tp_free*/
+    GldObject_tp_is_gc,                 /*tp_is_gc*/
 };
-/* --------------------------------------------------------------------- */
-
-/* Function of two integers returning integer */
-
-// PyDoc_STRVAR(xx_foo_doc,
-// "foo(i,j)\n\
-// \n\
-// Return the sum of i and j.");
-
-// static PyObject *
-// xx_foo(PyObject *self, PyObject *args)
-// {
-//     long i, j;
-//     long res;
-//     if (!PyArg_ParseTuple(args, "ll:foo", &i, &j))
-//         return NULL;
-//     res = i+j; /* XXX Do something here */
-//     return PyLong_FromLong(res);
-// }
-
-
-/* Function of no arguments returning new Gld object */
-
-static PyObject *
-gldobject_new(PyObject *self, PyObject *args)
-{
-    GldObject *rv;
-
-    if (!PyArg_ParseTuple(args, ":new"))
-        return NULL;
-    rv = newGldObject(args);
-    if (rv == NULL)
-        return NULL;
-    return (PyObject *)rv;
-}
-
-/* Example with subtle bug from extensions manual ("Thin Ice"). */
-
-static PyObject *
-gldobject_bug(PyObject *self, PyObject *args)
-{
-    PyObject *list, *item;
-
-    if (!PyArg_ParseTuple(args, "O:bug", &list))
-        return NULL;
-
-    item = PyList_GetItem(list, 0);
-    /* Py_INCREF(item); */
-    PyList_SetItem(list, 1, PyLong_FromLong(0L));
-    PyObject_Print(item, stdout, 0);
-    printf("\n");
-    /* Py_DECREF(item); */
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-/* Test bad format character */
-
-static PyObject *
-gldobject_roj(PyObject *self, PyObject *args)
-{
-    PyObject *a;
-    long b;
-    if (!PyArg_ParseTuple(args, "O#:roj", &a, &b))
-        return NULL;
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-
