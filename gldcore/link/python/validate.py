@@ -1,9 +1,10 @@
 import sys
 assert(sys.version_info.major>2)
 
-# import my_test
-# a = my_test.MyTest
-# a.warning("MyTest")
+import my_test
+a = my_test.MyTest(name='my_test')
+print(a.name)
+#a.output("my test")
 
 import gridlabd
 gridlabd.command('validate.glm')

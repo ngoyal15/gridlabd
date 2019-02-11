@@ -1,13 +1,25 @@
 /* GldObject is the base class used to define new classes in the gridlabd python module */
 
 #include "GldObject.h"
+#include "gridlabd.h"
 
 // base type static allocation
 static PyTypeObject GldObject_Type;
+static CLASS *python_object_class = NULL;
+
+// type init
+void GldObject_typeinit(void)
+{
+	python_object_class = class_register(NULL,"python_object",sizeof(GldObject_Type),PC_AUTOLOCK);
+	if ( python_object_class == NULL )
+		THROW("unable to register python_object class in gridlabd");
+}
 
 // module add type
 int GldObject_addtype(PyObject *module)
 {
+	if ( python_object_class == NULL )
+		GldObject_typeinit();
     if ( PyType_Ready(&GldObject_Type) )
         return -1;
     if ( PyModule_AddObject(module,"GldObject",&GldObject_Type))
@@ -16,62 +28,86 @@ int GldObject_addtype(PyObject *module)
 }
 
 // type methods
-static PyObject *GldObject_exception(PyObject *self, PyObject *args)
+static void GldObject_name(GldObject *self, char *buffer, size_t size)
 {
+	if ( self->obj ) 
+	{
+		if ( self->obj->name )
+		{
+			snprintf(buffer,size,"%s",self->obj->name);
+		}
+		else
+		{
+			snprintf(buffer,size,"<%s:%d>",self->obj->oclass->name,self->obj->id);
+		}
+	}
+}
+
+static PyObject *GldObject_exception(GldObject *self, PyObject *args)
+{
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
+    char *text;
+    if ( PyArg_ParseTuple(args,"s",&text) )
+	    THROW("%s%s",objname,text);
+    return NULL;
+}
+
+static PyObject *GldObject_error(GldObject *self, PyObject *args)
+{
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
     char *text;
     if ( ! PyArg_ParseTuple(args,"s",&text) )
         return NULL;
-    THROW("%s",text);
-    Py_UNREACHABLE();
+    return PyLong_FromLong(output_error("%s.%s",objname,text));
 }
 
-static PyObject *GldObject_error(PyObject *self, PyObject *args)
+static PyObject *GldObject_output(GldObject *self, PyObject *args)
 {
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
     char *text;
     if ( ! PyArg_ParseTuple(args,"s",&text) )
         return NULL;
-    return PyLong_FromLong(output_error("%s",text));
+    return PyLong_FromLong(output_message("%s.%s",objname,text));
 }
 
-static PyObject *GldObject_output(PyObject *self, PyObject *args)
+static PyObject *GldObject_warning(GldObject *self, PyObject *args)
 {
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
     char *text;
     if ( ! PyArg_ParseTuple(args,"s",&text) )
         return NULL;
-    return PyLong_FromLong(output_message("%s",text));
+    return PyLong_FromLong(output_warning("%s.%s",objname,text));
 }
 
-static PyObject *GldObject_warning(PyObject *self, PyObject *args)
+static PyObject *GldObject_debug(GldObject *self, PyObject *args)
 {
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
     char *text;
     if ( ! PyArg_ParseTuple(args,"s",&text) )
         return NULL;
-    return PyLong_FromLong(output_warning("%s",text));
+    return PyLong_FromLong(output_debug("%s.%s",objname,text));
 }
 
-static PyObject *GldObject_debug(PyObject *self, PyObject *args)
+static PyObject *GldObject_get_name(GldObject *self, PyObject *args)
 {
-    char *text;
-    if ( ! PyArg_ParseTuple(args,"s",&text) )
-        return NULL;
-    return PyLong_FromLong(output_debug("%s",text));
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
+    return Py_BuildValue("s",objname);
 }
 
-static PyObject *GldObject_get_name(PyObject *self, PyObject *args)
+static PyObject *GldObject_get_class(GldObject *self, PyObject *args)
 {
     // TODO
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static PyObject *GldObject_get_class(PyObject *self, PyObject *args)
-{
-    // TODO
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-static PyObject *GldObject_get_id(PyObject *self, PyObject *args)
+static PyObject *GldObject_get_id(GldObject *self, PyObject *args)
 {
     // TODO
     Py_INCREF(Py_None);
@@ -94,19 +130,21 @@ static PyMethodDef GldObject_tp_methods[] = {
 };
 
 // type functions
-static PyObject *GldObject_tp_new(PyObject *arg)
+static PyObject *GldObject_tp_new(GldObject *arg)
 {
     GldObject *self = PyObject_New(GldObject, &GldObject_Type);
     if (self == NULL)
         return NULL;
-    // TODO
-    self->obj = NULL;
+    self->oclass = python_object_class;
+    self->obj = object_create_single(self->oclass);
     return (PyObject*)self;
 }
 
-static int GldObject_tp_init(PyObject *self, PyObject *args, PyObject *kwargs)
+static int GldObject_tp_init(GldObject *self, PyObject *args, PyObject *kwargs)
 {
-    // TODO
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
+	output_error("%s.init(...): not implemented",objname);
     return 0;
 }
 
@@ -117,34 +155,20 @@ static void GldObject_tp_dealloc(GldObject *self)
 
 static PyObject *GldObject_tp_repr(GldObject *self)
 {
-    if ( self->obj )
-    {
-        char buffer[1024];
-        snprintf(buffer,sizeof(buffer),"<%s:%d>",self->obj->oclass->name,self->obj->id);
-        return Py_BuildValue("s",buffer);
-    }
-    else
-    {
-        char buffer[1024];
-        snprintf(buffer,sizeof(buffer),"<unlinked GldObject at 0x%08x>",self);
-        return Py_BuildValue("s",buffer);
-    }
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
+    return Py_BuildValue("s",objname);
 }
 
-static PyObject *GldObject_tp_getattro(PyObject *self, PyObject *name)
+static PyObject *GldObject_tp_getattro(GldObject *self, const char *name)
 {
-    // TODO
-    // if (self->x_attr != NULL) {
-    //     PyObject *v = PyDict_GetItem(self->x_attr, name);
-    //     if (v != NULL) {
-    //         Py_INCREF(v);
-    //         return v;
-    //     }
-    // }
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
+	output_error("%s.getattro(name='%s'): not implemented",objname,name);
     return PyObject_GenericGetAttr((PyObject *)self, name);
 }
 
-static int GldObject_tp_setattr(GldObject *self, const char *name, PyObject *v)
+static int GldObject_tp_setattro(GldObject *self, const char *name, PyObject *v)
 {
     // TODO
     // if (self->x_attr == NULL) {
@@ -161,11 +185,14 @@ static int GldObject_tp_setattr(GldObject *self, const char *name, PyObject *v)
     // }
     // else
     //     return PyDict_SetItemString(self->x_attr, name, v);
+	char objname[64] = "<GldObject:NULL>";
+	GldObject_name(self,objname,sizeof(objname));
+    output_error("%s.setattr(name='%s'): not implemented",objname,name);
     Py_INCREF(Py_None);
     return Py_None;
 }
 
-static int GldObject_tp_is_gc(PyObject *self)
+static int GldObject_tp_is_gc(GldObject *self)
 {
     return 0;
 }
@@ -179,14 +206,14 @@ PyObject *GldObject_tp_alloc(PyTypeObject *self, Py_ssize_t nitems)
 // module type definition
 static PyTypeObject GldObject_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "GldObject",       		            /*tp_name*/
+    "gridlabd.GldObject",       		/*tp_name*/
     sizeof(GldObject),          		/*tp_basicsize*/
     0,                          		/*tp_itemsize*/
     /* methods */
     GldObject_tp_dealloc,    	        /*tp_dealloc*/
     0,                          		/*tp_print*/
-    0,             		                /*tp_getattr*/
-    GldObject_tp_setattr,   	        /*tp_setattr*/
+    0,               					/*tp_getattr*/
+    0,   	        					/*tp_setattr*/
     0,                          		/*tp_reserved*/
     GldObject_tp_repr,                  /*tp_repr*/
     0,                          		/*tp_as_number*/
@@ -196,7 +223,7 @@ static PyTypeObject GldObject_Type = {
     0,                          		/*tp_call*/
     0,                          		/*tp_str*/
     GldObject_tp_getattro,	            /*tp_getattro*/
-    0,                          		/*tp_setattro*/
+    GldObject_tp_setattro,      		/*tp_setattro*/
     0,                          		/*tp_as_buffer*/
     Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE, /*tp_flags*/
     0,                          		/*tp_doc*/

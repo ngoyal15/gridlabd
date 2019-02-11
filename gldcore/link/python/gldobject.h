@@ -9,6 +9,7 @@
 
 typedef struct {
     PyObject_HEAD
+    CLASS *oclass;
     OBJECT *obj;
 } GldObject;
 

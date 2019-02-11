@@ -1,1 +1,1 @@
-compile_options = ["-w","-O3"]
+compile_options = ["-w","-O0","-g"]

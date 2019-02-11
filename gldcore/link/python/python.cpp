@@ -1,8 +1,6 @@
 
 #include "GldObject.h"
 
-extern PyTypeObject GldObject_Type;
-
 static PyObject *gridlabd_exception(const char *format, ...);
 
 static PyObject *gridlabd_title(PyObject *self, PyObject *args);
