@@ -80,15 +80,15 @@ static PyObject *GldObject_get_id(PyObject *self, PyObject *args)
 
 static PyMethodDef GldObject_tp_methods[] = {
 	// output streams
-    {"exception", (PyCFunction)GldObject_exception, METH_VARARGS, PyDoc_STR("Raise an exception")},
-    {"error", (PyCFunction)GldObject_error, METH_VARARGS, PyDoc_STR("Output an object error message")},
-    {"warning", (PyCFunction)GldObject_warning, METH_VARARGS, PyDoc_STR("Output an object warning message")},
-    {"output", (PyCFunction)GldObject_output, METH_VARARGS, PyDoc_STR("Output an object message")},
-    {"debug", (PyCFunction)GldObject_debug, METH_VARARGS, PyDoc_STR("Output an object debug message")},
+    {"exception",   GldObject_exception,    METH_VARARGS, PyDoc_STR("Raise an exception")},
+    {"error",       GldObject_error,        METH_VARARGS, PyDoc_STR("Output an object error message")},
+    {"warning",     GldObject_warning,      METH_VARARGS, PyDoc_STR("Output an object warning message")},
+    {"output",      GldObject_output,       METH_VARARGS, PyDoc_STR("Output an object message")},
+    {"debug",       GldObject_debug,        METH_VARARGS, PyDoc_STR("Output an object debug message")},
     // header access
-    {"get_name", (PyCFunction)GldObject_get_name, METH_VARARGS, PyDoc_STR("Get object name")},
-    {"get_class", (PyCFunction)GldObject_get_class, METH_VARARGS, PyDoc_STR("Get object class")},
-    {"get_id", (PyCFunction)GldObject_get_id, METH_VARARGS, PyDoc_STR("Get object id")},
+    {"get_name",    GldObject_get_name,     METH_VARARGS, PyDoc_STR("Get object name")},
+    {"get_class",   GldObject_get_class,    METH_VARARGS, PyDoc_STR("Get object class")},
+    {"get_id",      GldObject_get_id,       METH_VARARGS, PyDoc_STR("Get object id")},
     // property access
     {NULL, NULL} /* sentinel */
 };

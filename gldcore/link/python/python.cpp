@@ -262,7 +262,7 @@ PyMODINIT_FUNC PyInit_gridlabd(void)
     PyModule_AddObject(this_module,"INVALID",PyLong_FromLong(TS_INVALID));
 
     if ( GldObject_addtype(this_module) )
-        return NULL;
+        return gridlabd_exception("unable to define type GldObject");
     else
         return this_module;
 }
