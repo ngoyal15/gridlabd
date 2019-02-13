@@ -80,7 +80,7 @@ if [ -f customize -a ! -z "${ENABLE}" ]; then
 fi
 autoreconf -isf
 ./configure --enable-silent-rules --prefix=/usr/local --with-mysql=$MYSQLOPT 'CXXFLAGS=-w -O3' 'CFLAGS=-w -O3'
-make install
+make -j8 install
 
 # download weather data
 if [ -d /usr/local/share/gridlabd ]; then
