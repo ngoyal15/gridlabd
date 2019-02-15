@@ -111,3 +111,4 @@ third_party/xerces*/*
 .DS_Store
 *.json
 gldcore/link/python/done.glm
+*.img
