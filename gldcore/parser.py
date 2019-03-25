@@ -6,10 +6,13 @@ def debug(level, msg) :
 	if level < debug_level :
 		print("DEBUG[%d]: %s" % (level,msg))
 
-class GlmParser :
+class Parser :
 	def __init__(self,yfile="parser.y") :
 		self.directives = {"BASE":None, "CLASS":None, "START":None, "END":[]};
-		self.targets = {}
+		self.targets = {
+			"SPACE"		: { R"[ \t\r\n]" : [R"[ \t\r\n]"]},
+			"NEWLINE"	: { R"[\n\r] NEWLINE": [ R"[\n\r]", "NEWLINE" ]},
+		}
 		self.yfile = yfile
 		with open(yfile,"r") as f :
 			terminal = None
@@ -119,27 +122,40 @@ class GlmParser :
 		f.write("{\n")
 		debug(2,"terminals = %s" % self.targets[target].values())
 		for terminal in self.targets[target].values():
-			f.write("\tif ( {0} )\n".format(self.make_calls(terminal)))
+			f.write("\tif ( {0} )\n".format(self.make_tests(terminal)))
 			f.write("\t{\n")
+			#f.write(self.make_calls(terminal))
 			f.write("\t}\n")
 		f.write("\treturn 0;\n")
 		f.write("}\n")
 
-	def make_calls(self,terminal) :
-		calls = []
+	def make_tests(self,terminal) :
+		debug(2,"make_tests(terminal=%s)" % terminal)
+		tests = []
 		for item in terminal :
-			if item[0] == '[' :
-				calls.append("match(PARSER,\"{0}\")".format(item))
+			if item[0] == "[" :
+				tests.append("match(PARSER,\"{0}\")".format(item))
+			elif item[0] == "\"" :
+				tests.append("literal(PARSER,{0})".format(item))
+			elif re.fullmatch("[^A-Za-z0-9_]",item[-1]) :
+				tests.append("{0}(PARSER,'{1}')".format(item[:-1],item[-1]))
 			else :
-				calls.append("{0}(PARSER)".format(item))
-		return " && ".join(calls)
+				tests.append("{0}(PARSER,'\\0')".format(item))
+		return " && ".join(tests)
+
+	def make_calls(self,terminal) :
+		debug(2,"make_calls(terminal=%s)" % terminal)
+		calls = []
+		for items in terminal :
+			calls.append("\t\t%s\n" % items)
+		return calls
 
 if __name__ == '__main__' :
 	if ( len(sys.argv) > 1 ) :
 		name = sys.argv[1]
 	else :
 		name = "parser.y"
-	parser = GlmParser(name)
+	parser = Parser(name)
 	parser.write_h()
 	parser.write_cpp()
 
