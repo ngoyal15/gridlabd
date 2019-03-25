@@ -123,3 +123,5 @@ output/
 models/ieee123/config/local.glm
 .bash_profile
 *.tmp
+gldcore/glmparser.cpp
+gldcore/glmparser.h

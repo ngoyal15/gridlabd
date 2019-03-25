@@ -2,7 +2,20 @@
 #
 # Description of syntax of this file
 #
-#   % 			specifies a make-parser control tag (e.g., START, END)
+# Parser directive
+#	%CLASS GlmFile
+#   %START entry_call(target)
+#   %END finalization_call()
+#
+# Target definition
+# target-name
+#		: target-1 target-2 ... target-N
+#			:: terminal-1
+#			:: terminal-2
+#			...
+#			:: terminal-N
+#
+#   % 			specifies a parser directive (e.g., BASE, START, END)
 #   #			specifies a command
 #   ALLCAPS		specifies a new pattern name
 #   "text"		specifies literal text
@@ -10,15 +23,19 @@
 #   ?			specifies the last pattern occurs zero or one time only
 #   *			specifies the last pattern occurs zero or more times
 #   +			specifies the last pattern occurs one or more times
-#   ( pattern ) specifies an inline pattern substitution
+#   (pattern)   specifies an inline pattern substitution
 #   call(list)	specifies a function call on the patterns matched
 #   NEWLINE		ends the current specification
 #	:			specify an terminal sequence
 #	::			specify a terminal handler
 #
-# convert this file to C++ using glmfile.py
+# convert this file to C++ using the command
+# 	% python glmparser.py glmparser.y
+#
 
-%START load_glm5( GLMFILE)
+%CLASS glmparser
+%BASE GlmFile
+%START GLMFILE
 
 NEWLINE 
 	: [\n\r] NEWLINE
@@ -35,7 +52,7 @@ SPACES
 ENDLINE
 	: WHITE NEWLINE
 
-FILENAME
+FILEPATH
 	: DQUOTE PATHNAME DQUOTE
 	: QUOTE PATHNAME QUOTE
 	: "[" URLNAME "]"
@@ -74,9 +91,6 @@ GLMFILE
 		:: create_object(CLASSNAME,PROPERTYLIST)
 	# TODO: modify, filter, schedule
 
-ENDLINE
-	: WHITE NEWLINE
-
 MACROEXPRESSION
 	: "set" SPACES GLOBALNAME WHITE EXPRESSION ENDLINE
 		:: set_global(GLOBALNAME,EXPRESSION)
@@ -95,7 +109,6 @@ MACROEXPRESSION
 	: "endif" ENDLINE
 		:: if_close()
 	# TODO: wget, print, warning, error, etc.
-
 
 INLINETEXT
 	: BLOCKTEXT
