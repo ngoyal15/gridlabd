@@ -837,7 +837,7 @@ typedef enum {_PT_FIRST=-1,
 	PT_loadshape,	/**< Loadshapes are state machines driven by schedules */
 	PT_enduse,		/**< Enduse load data */
 	PT_random,		/**< Randomized number */
-	PT_method,		/**< Method */
+	PT_method,		/**< Method interface */
 	/* add new property types here - don't forget to add them also to rt/gridlabd.h and property.c */
 #ifdef USE_TRIPLETS
 	PT_triple, /**< triplet of doubles (not supported) */
@@ -859,6 +859,7 @@ typedef enum {_PT_FIRST=-1,
 	PT_HAS_NOTIFY, /* used to indicate that a notify function exists for the specified property */
 	PT_HAS_NOTIFY_OVERRIDE, /* as PT_HAS_NOTIFY, but instructs the core not to set the property to the value being set */
 	PT_DEFAULT, /* identifies the default value to use when creating the object property */
+	PT_PREVIEW, /* used to flag that a property that is previewed and may change */
 } PROPERTYTYPE; /**< property types */
 typedef const char *CLASSNAME; /**< the name a GridLAB class */
 #define MAXCLASSNAMELEN 64

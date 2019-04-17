@@ -426,17 +426,18 @@ typedef enum {_PT_FIRST=-1,
 	PT_char1024, /**< the data is \p NULL -terminated string up to 1024 characters in length */
 	PT_object, /**< the data is a pointer to a GridLAB object */
 	PT_delegated, /**< the data is delegated to a module for implementation */
-	PT_bool, /**< the data is a true/false value */
+	PT_bool, /**< the data is a true/false value, implemented as a C++ bool */
 	PT_timestamp, /**< timestamp value */
 	PT_double_array, /**< the data is a fixed length double[] */
 	PT_complex_array, /**< the data is a fixed length complex[] */
 /*	PT_object_array, */ /**< the data is a fixed length array of object pointers*/
-	PT_float,	/**< Single-precision float	*/
 	PT_real,	/**< Single or double precision float ~ allows double values to be overriden */
+	PT_float,	/**< Single-precision float	*/
 	PT_loadshape,	/**< Loadshapes are state machines driven by schedules */
 	PT_enduse,		/**< Enduse load data */
 	PT_random,		/**< Randomized number */
 	PT_method,		/**< Method interface */
+	/* add new property types here - don't forget to add them also to rt/gridlabd.h and property.c */
 #ifdef USE_TRIPLETS
 	PT_triple, /**< triplet of doubles (not supported) */
 	PT_triplex, /**< triplet of complexes (not supported) */
@@ -453,9 +454,11 @@ typedef enum {_PT_FIRST=-1,
 	PT_DESCRIPTION, /* used to provide helpful description of property */
 	PT_EXTEND, /* used to enlarge class size by the size of the current property being mapped */
 	PT_EXTENDBY, /* used to enlarge class size by the size provided in the next argument */
-	PT_DEPRECATED,
-	PT_HAS_NOTIFY,
-	PT_HAS_NOTIFY_OVERRIDE,
+	PT_DEPRECATED, /* used to flag a property that is deprecated */
+	PT_HAS_NOTIFY, /* used to indicate that a notify function exists for the specified property */
+	PT_HAS_NOTIFY_OVERRIDE, /* as PT_HAS_NOTIFY, but instructs the core not to set the property to the value being set */
+	PT_DEFAULT, /* identifies the default value to use when creating the object property */
+	PT_PREVIEW, /* used to flag that a property that is previewed and may change */
 } PROPERTYTYPE; /**< property types */
 typedef const char *CLASSNAME; /**< the name a GridLAB class */
 typedef unsigned int OBJECTRANK; /**< Object rank number */
