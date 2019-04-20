@@ -73,6 +73,22 @@ else
 	echo "WARNING: ${ARMA} not found -- armadillo will not be included in this build" > /dev/stderr
 fi
 
+# cleanup third-party sources
+echo "Cleaning up third-party sources"
+rm -rf ._armadillo-7.800.1 armadillo-7.800.1.tar armadillo-7.800.1/ mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar mysql-connector-c-6.1.11-linux-glibc2.12-x86_64/ xerces-c-src_2_8_0.tar
+git checkout .
+
+# debugger support
+if [ "${ENABLE_GDB}" == "yes" ]; then
+	echo "Added support for gdb"
+	debuginfo-install glibc-2.17-222.el7.x86_64 libgcc-4.8.5-28.el7_5.1.x86_64 libstdc++-4.8.5-28.el7_5.1.x86_64
+	CFLAGS='-O0 -g'
+	CXXFLAGS='-O0 -g'
+else
+	CFLAGS='-O2 -g'
+	CXXFLAGS='-O2 -g'
+fi
+
 # install gridlabd
 cd /usr/local/src/gridlabd
 if [ -f customize -a ! -z "${ENABLE}" ]; then
@@ -80,19 +96,26 @@ if [ -f customize -a ! -z "${ENABLE}" ]; then
 fi
 autoreconf -isf
 ./configure --enable-silent-rules --prefix=/usr/local --with-mysql=$MYSQLOPT 'CXXFLAGS=-w -O3' 'CFLAGS=-w -O3'
+git rm --cached third_party/armadillo-7.800.1.tar.gz
+git rm --cached third_party/mysql-connector-c-6.1.11-linux-glibc2.12-x86_64.tar.gz
+git rm --cached third_party/xerces-c-src_2_8_0.tar.gz
+git pull origin $BRANCH
+git reset --hard
 make -j8 install
 if [ "$BRANCH" = "master" ]; then 
 	make validate 
 fi
 
 # download weather data
-if [ -d /usr/local/share/gridlabd ]; then
-	git clone https://github.com/dchassin/weather /usr/local/src/weather
-	for state in ${WEATHER}; do
-		ln /usr/local/src/weather/US/${state}*.tmy3  /usr/local/share/gridlabd
-	done
-else
-	echo "WARNING: /usr/local/share/gridlabd not found -- no weather data downloaded" >/dev/stderr
+if [ "${GET_WEATHER:-no}" == "yes" ]; then
+	if [ -d /usr/local/share/gridlabd ]; then
+		git clone https://github.com/dchassin/weather /usr/local/src/weather
+		for state in ${WEATHER}; do
+			ln /usr/local/src/weather/US/${state}*.tmy3  /usr/local/share/gridlabd
+		done
+	else
+		echo "WARNING: /usr/local/share/gridlabd not found -- no weather data downloaded" >/dev/stderr
+	fi
 fi
 
 # daemon setup
@@ -107,8 +130,10 @@ mkdir -p /usr/local/var
 adduser -d /usr/local/var/gridlabd gridlabd
 
 # clean up
-echo "Cleaning up cloned repositories"
-rm -rf /usr/local/src/*
+if [ "${REMOVE_SOURCE:-yes}" == "yes" ]; then
+	echo "Cleaning up source code"
+	rm -rf /usr/local/src/*
+fi
 
 # done
 echo "Build of $REPO/$BRANCH done"
