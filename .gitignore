@@ -125,3 +125,4 @@ models/ieee123/config/local.glm
 *.tmp
 gldcore/glmparser.cpp
 gldcore/glmparser.h
+gldcore/link/python/example.png
