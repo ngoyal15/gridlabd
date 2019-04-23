@@ -25,3 +25,5 @@ RUN chmod +wx *.sh
 RUN bash system.sh
 RUN bash gridlabd.sh
 EXPOSE 6266-6299/tcp
+
+RUN chown root:root . -R
