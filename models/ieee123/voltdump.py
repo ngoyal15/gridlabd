@@ -86,7 +86,7 @@ for filename in os.listdir("output") :
 					if row[0]=="# timestamp" :
 						headers.extend(row[1:])
 					continue
-				timestamp = datetime.datetime.strptime(row[0],"%y-%m-%d %H:%M:%S %Z")
+				timestamp = datetime.datetime.strptime(row[0],"%y-%m-%d %H:%M:%S.%f %Z")
 				if not timestamp in data.keys() :
 					data[timestamp] = []
 				try :
