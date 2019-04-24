@@ -21,7 +21,6 @@ rm -f /lib/systemd/system/anaconda.target.wants/*;
 VOLUME [ "/sys/fs/cgroup" ]
 WORKDIR /tmp
 COPY *.sh /tmp/
-RUN echo 'alias python3="python3.7' >> ~/.bashrc
 RUN chmod +wx *.sh
 RUN bash system.sh
 RUN bash gridlabd.sh
