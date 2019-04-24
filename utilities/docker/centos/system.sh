@@ -26,3 +26,6 @@ cd Python-3.7.2
 yum -y install libffi-devel
 make altinstall
 cd -
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+mv /usr/bin/python /usr/bin/python-old
+ln -s /usr/local/bin/python3.7 /usr/bin/python
