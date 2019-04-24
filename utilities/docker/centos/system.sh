@@ -26,4 +26,3 @@ cd Python-3.7.2
 yum -y install libffi-devel
 make altinstall
 cd -
-alias python3="python3.7"
