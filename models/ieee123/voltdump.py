@@ -9,7 +9,7 @@ data = {}
 nodes = ["Timestamp"]
 lastnodes = []
 timestamp = None
-#timezone = "UTC"
+timezone = "UTC"
 with open('output/volt_dump.csv', 'r') as dumpfile:
 	print("Reading volt_dump...")
 	reader = csv.reader(dumpfile)
@@ -18,9 +18,9 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 			tpos = row[0].find(" at ")
 			if tpos > 0 :
 				timestamp = row[0][tpos+4:tpos+27]
-				timestamp = datetime.datetime.strptime(timestamp,"%Y-%m-%d %H:%M:%S %Z")
+				timestamp = datetime.datetime.strptime(timestamp,"%y-%m-%d %H:%M:%S %Z")
 				data[timestamp] = []
-				#timezone = row[0][tpos+24:tpos+27]
+				timezone = row[0][tpos+24:tpos+27]
 			header = []
 		elif not header :
 			header = row
@@ -86,7 +86,7 @@ for filename in os.listdir("output") :
 					if row[0]=="# timestamp" :
 						headers.extend(row[1:])
 					continue
-				timestamp = datetime.datetime.strptime(row[0],"%Y-%m-%d %H:%M:%S %Z")
+				timestamp = datetime.datetime.strptime(row[0],"%y-%m-%d %H:%M:%S %Z")
 				if not timestamp in data.keys() :
 					data[timestamp] = []
 				try :
