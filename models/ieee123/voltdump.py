@@ -18,7 +18,7 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 			tpos = row[0].find(" at ")
 			if tpos > 0 :
 				timestamp = row[0][tpos+4:tpos+27]
-				timestamp = datetime.datetime.strptime(timestamp,"%y-%m-%d %H:%M:%S %Z")
+				timestamp = datetime.datetime.strptime(timestamp,"%y-%m-%d %H:%M:%S.%f %Z")
 				data[timestamp] = []
 				timezone = row[0][tpos+24:tpos+27]
 			header = []
