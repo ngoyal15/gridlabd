@@ -25,6 +25,7 @@ wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
 tar xzf Python-3.7.2.tgz
 cd Python-3.7.2
 ./configure --enable-optimizations
+yum -y install libffi-devel
 make altinstall
 cd ../../..
 [ -f /usr/bin/python3 ] || ln -s /usr/bin/python3.7 /usr/bin/python3
