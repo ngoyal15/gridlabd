@@ -1,6 +1,6 @@
 /* GldObject is the base class used to define new classes in the gridlabd python module */
 
-#include "GldObject.h"
+#include "gldobject.h"
 #include "gridlabd.h"
 
 // base type static allocation

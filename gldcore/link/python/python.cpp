@@ -1,5 +1,5 @@
 
-#include "GldObject.h"
+#include "gldobject.h"
 
 static PyObject *gridlabd_exception(const char *format, ...);
 
