@@ -20,8 +20,8 @@
 
 typedef enum {I='i',J='j',A='d', R='r'} CNOTATION; /**< complex number notation to use */
 #define CNOTATION_DEFAULT J /* never set this to A */
-#define PI 3.1415926535897932384626433832795
-#define E 2.71828182845905
+#define PI (3.1415926535897932384626433832795)
+#define E (2.71828182845905)
 
 #include <math.h>
 #include "platform.h"
@@ -42,7 +42,13 @@ private:
 #define complex_set_power_factor(X,M,P)	complex_set_polar((X),(M)/(P),acos(P))
 #define complex_get_mag(X) (sqrt((X).r*(X).r + (X).i*(X).i))
 #define complex_get_arg(X) ((X).r==0 ? ( (X).i > 0 ? PI/2 : ((X).i<0 ? -PI/2 : 0) ) : ( (X).r>0 ? atan((X).i/(X).r) : PI+atan((X).i/(X).r) ))
-double complex_get_part(void *c, char *name);
+#define complex_set_rect(C,X,Y) ((C).r=(X),(C).i=(Y))
+#define complex_set_real(C,X) ((C).r=(X))
+#define complex_set_imag(C,Y) ((C).i=(Y))
+#define complex_set_mag(C,M) (NULL) // TODO
+#define complex_set_arg(C,R) (NULL) // TODO
+#define complex_set_ang(C,D) (NULL) // TODO
+double complex_get_part(void *c, const char *name);
 #else
 public:
 	/** Construct a complex number with zero magnitude */
@@ -93,12 +99,27 @@ public:
 	{
 		return r;
 	};
+	inline double Re(double x)
+	{
+		r = x;
+		return r;
+	};
 	inline double & Im(void) /**< access to imaginary part */
 	{
 		return i;
 	};
+	inline double Im(double y)
+	{
+		i = y;
+		return i;
+	};
 	inline CNOTATION & Notation(void) /**< access to notation */
 	{
+		return f;
+	};
+	inline CNOTATION Notation(CNOTATION s)
+	{
+		f = s;
 		return f;
 	};
 	inline double Mag(void) const /**< compute magnitude */
@@ -128,11 +149,20 @@ public:
 		else
 			return PI+atan(i/r);
 	};
+	inline double Ang(void)
+	{
+		return Arg()*180.0/PI;
+	}
 	inline double Arg(double a)  /**< set angle */
 	{
 		SetPolar(Mag(),a,f);
 		return a;
 	};
+	inline double Ang(double a)
+	{
+		SetPolar(Mag(),a*PI/180.0);
+		return a;
+	}
 	inline complex Log(void) const /**< compute log */
 	{ 
 		return complex(log(Mag()),Arg(),f);
@@ -329,6 +359,9 @@ public:
 	inline bool IsFinite(void) { return isfinite(r) && isfinite(i); };
 };
 #endif
+
+int complex_from_string(void *c, const char *str);
+int complex_set_part(void *c, const char *name, const char *value);
 
 #endif
  /**@}**/

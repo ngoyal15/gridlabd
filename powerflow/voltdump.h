@@ -22,6 +22,7 @@ public:
 	int32 maxcount;
 	enumeration mode;		///< dumps the voltages in either polar or rectangular notation
 	char8 filemode;
+	double interval;
 public:
 	static CLASS *oclass;
 public:
@@ -29,7 +30,7 @@ public:
 	int create(void);
 	int init(OBJECT *parent);
 	TIMESTAMP commit(TIMESTAMP t);
-	int isa(char *classname);
+	int isa(CLASSNAME classname);
 
 	void dump(TIMESTAMP t);
 };
