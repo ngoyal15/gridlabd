@@ -1,0 +1,13 @@
+class mytest {
+	python_int my_int;
+	python_real my_real;
+	python_str my_str;
+}
+
+object mytest {
+	my_int "1";
+	my_real "1.23";
+	my_str "test";
+}
+
+#set savefile="gridlabd.json";

@@ -14,7 +14,8 @@ assert(sys.version_info.major>2)
 import os
 srcdir = os.getenv('SRCDIR')
 if not srcdir :
-	raise Exception("SRCDIR environment variable was not set -- try the command 'export SRCDIR=$PWD' before running setup.py")
+	srcdir="."
+#	raise Exception("SRCDIR environment variable was not set -- try the command 'export SRCDIR=$PWD' before running setup.py")
 
 #if not os.path.exists('gldcore/build.h') :
 #	raise Exception("python module must be built after the main build is completed (gldcore/build.h is missing)")
@@ -28,7 +29,7 @@ except:
 	except :
 		compile_options = None
 	if not compile_options :
-		compile_options=['-Wall','-O3','-g']
+		compile_options=['-Wall','-O0','-g']
 if not srcdir :
 	raise Exception("SRCDIR environment variable was not set -- try the command 'export SRCDIR=$PWD' before running setup.py")
 compile_options.extend(['-I%s/gldcore'%srcdir,'-Igldcore','-Igldcore/rt',"-DHAVE_CONFIG_H","-DHAVE_PYTHON"])
@@ -38,8 +39,8 @@ gridlabd = Extension('gridlabd',
 	include_dirs = ['gldcore/link/python','gldcore'],
 	extra_compile_args = compile_options,
 	libraries = ['ncurses', 'curl'],
-	sources = list(map(lambda x: srcdir+'/'+x,['gldcore/link/python/python.cpp',
-
+	sources = list(map(lambda x: srcdir+'/'+x,[
+		'gldcore/link/python/python.cpp',
 		'gldcore/aggregate.cpp',
 		'gldcore/class.cpp',
 		'gldcore/cmdarg.cpp',

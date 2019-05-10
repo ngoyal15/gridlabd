@@ -844,6 +844,13 @@ typedef enum {_PT_FIRST=-1,
 	PT_enduse,		/**< Enduse load data */
 	PT_random,		/**< Randomized number */
 	PT_method,		/**< Method */
+#ifdef HAVE_PYTHON
+	PT_python_integer,	/**< Python integer */
+	PT_python_double,	/**< Python integer */
+	PT_python_string,	/**< Python integer */
+//	PT_python_list,	/**< Python integer */
+//	PT_python_dict,	/**< Python integer */
+#endif
 	/* add new property types here - don't forget to add them also to rt/gridlabd.h and property.c */
 #ifdef USE_TRIPLETS
 	PT_triple, /**< triplet of doubles (not supported) */

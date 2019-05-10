@@ -27,6 +27,21 @@
 #include "stream.h"
 #include "exec.h"
 
+#ifdef HAVE_PYTHON
+#include <Python.h>
+int python_create(void *ptr);
+int convert_from_python_int(char *buffer, int size, void *data, PROPERTY *prop);
+int convert_to_python_int(const char *buffer, void *data, PROPERTY *prop);
+int convert_from_python_real(char *buffer, int size, void *data, PROPERTY *prop);
+int convert_to_python_real(const char *buffer, void *data, PROPERTY *prop);
+int convert_from_python_str(char *buffer, int size, void *data, PROPERTY *prop);
+int convert_to_python_str(const char *buffer, void *data, PROPERTY *prop);
+int convert_from_python_list(char *buffer, int size, void *data, PROPERTY *prop);
+int convert_to_python_list(const char *buffer, void *data, PROPERTY *prop);
+int convert_from_python_dict(char *buffer, int size, void *data, PROPERTY *prop);
+int convert_to_python_dict(const char *buffer, void *data, PROPERTY *prop);
+#endif
+
 SET_MYCONTEXT(DMC_PROPERTY)
 
 double complex_get_part(void *x, const char *name);
@@ -57,6 +72,13 @@ PROPERTYSPEC property_type[_PT_LAST] = {
 	{"enduse", "string", NULL, sizeof(enduse), 1024, convert_from_enduse, convert_to_enduse, enduse_create,NULL,{TCOPS(double)},enduse_get_part,enduse_set_part},
 	{"randomvar", "string", NULL, sizeof(randomvar), 24, convert_from_randomvar, convert_to_randomvar, randomvar_create,NULL,{TCOPS(double)},random_get_part,random_set_part},
 	{"method","string", NULL, 0, 0, convert_from_method,convert_to_method},
+#ifdef HAVE_PYTHON
+	{"python_int","integer","None",sizeof(PyObject*),64,convert_from_python_int,convert_to_python_int,python_create},
+	{"python_real","decimal","None",sizeof(PyObject*),64,convert_from_python_real,convert_to_python_real,python_create},
+	{"python_str","string","None",sizeof(PyObject*),64,convert_from_python_str,convert_to_python_str,python_create},
+//	{"python_list","string","None",sizeof(PyObject*),64,convert_from_python_list,convert_to_python_list,python_create},
+//	{"python_dict","string","None",sizeof(PyObject*),64,convert_from_python_dict,convert_to_python_dict,python_create},
+#endif
 };
 
 PROPERTYTYPE property_getfirst_type(void)

@@ -1,5 +1,11 @@
 
-#include "gldobject.h"
+#include <pthread.h>
+#include "gridlabd.h"
+#include <Python.h>
+#include "cmdarg.h"
+#include "load.h"
+#include "exec.h"
+#include "save.h"
 
 static PyObject *gridlabd_exception(const char *format, ...);
 
@@ -42,6 +48,8 @@ static PyObject *gridlabd_set_value(PyObject *self, PyObject *args);
 
 static PyObject *gridlabd_convert_unit(PyObject *self, PyObject *args);
 
+static PyObject *gridlabd_link_class(PyObject *self, PyObject *args);
+
 static PyMethodDef module_methods[] = {
     {"title", gridlabd_title, METH_VARARGS, "Get the software title"},
     {"version", gridlabd_version, METH_VARARGS, "Get the software version"},
@@ -80,7 +88,8 @@ static PyMethodDef module_methods[] = {
     {"set_value", gridlabd_set_value, METH_VARARGS, "Set a GridLAB-D object property"},
     // utilities
     {"convert_unit", gridlabd_convert_unit, METH_VARARGS, "Convert units of a float, complex or string"},
-
+    // class support
+    {"link_class", gridlabd_link_class, METH_VARARGS, "Link a python class to a GridLAB-D class"},
     {NULL, NULL, 0, NULL}
 };
 
@@ -264,9 +273,9 @@ PyMODINIT_FUNC PyInit_gridlabd(void)
     sprintf(version,"%d.%d.%d-%d",global_version_major,global_version_minor,global_version_patch,global_version_build);
     PyModule_AddObject(this_module,"__version__",Py_BuildValue("s",version));
 
-    if ( GldObject_addtype(this_module) )
-        return gridlabd_exception("unable to define type GldObject");
-    else
+    // if ( GldObject_addtype(this_module) )
+    //     return gridlabd_exception("unable to define type GldObject");
+    // else
         return this_module;
 }
 
@@ -1693,4 +1702,129 @@ static PyObject *gridlabd_module(PyObject *self, PyObject *args)
     else
         output_message("python module '%s' already loaded", name);
     return PyLong_FromLong(PyList_Size(modlist)-1);
+}
+
+//
+// >>> gridlabd.link_class(pyclass,classname)
+//
+// Links the specific python class to a gridlabd class
+//
+#include <structmember.h>
+#include <methodobject.h>
+static PyObject *gridlabd_link_class(PyObject *self, PyObject *args)
+{
+    PyObject *cls = NULL;
+    char *name = NULL;
+    if ( ! PyArg_ParseTuple(args,"Os",&cls,&name))
+    {
+        return gridlabd_exception("link_class() arguments invalid");
+    }
+    PyTypeObject *otype = Py_TYPE(cls);
+    if ( otype == NULL )
+    {
+        return gridlabd_exception("link_class() arguments is not valid");
+    }
+    printf("Class (size=%ld):\n",PyObject_Size(cls));
+    PyObject *dict = otype->tp_dict;
+    if ( dict != NULL )
+    {
+        Py_ssize_t pos = 0;
+        PyObject *key, *value;
+        while ( PyDict_Next(dict,&pos,&key,&value) )
+        {
+            printf("\t%ld: ",pos);
+            PyObject_Print(key,stdout,Py_PRINT_RAW);
+            printf(" = ");
+            PyObject_Print(value,stdout,Py_PRINT_RAW);
+            printf("\n");
+        }
+    }
+    printf("Instance:\n");
+    PyObject **data = _PyObject_GetDictPtr(cls); 
+    if ( data != NULL && *data != NULL )
+    {
+        Py_ssize_t pos = 0;
+        PyObject *key, *value;
+        while ( PyDict_Next(*data,&pos,&key,&value) )
+        {
+            printf("\t%ld: ",pos);
+            PyObject_Print(key,stdout,Py_PRINT_RAW);
+            printf(" = ");
+            PyObject_Print(value,stdout,Py_PRINT_RAW);
+            printf("\n");
+        }
+    }
+    return gridlabd_exception("link_class() is not implemented yet");
+}
+
+int python_create(void *ptr)
+{
+    PyObject **obj = (PyObject**)ptr;
+    *obj = Py_None;
+    Py_XINCREF(*obj);
+    return 1;
+}
+
+int convert_from_python(char *buffer, /**< a pointer to the string buffer */
+                        int size, /**< the size of the string buffer */
+                        void *data, /**< a pointer to the data that is not changed */
+                        PROPERTY *prop, /**< a pointer to keywords that are supported */
+                        const char *format)
+{
+    PyObject **obj = (PyObject**)data;
+    if ( *obj && PyArg_ParseTuple(*obj,format,buffer) )
+    {
+        return strlen(buffer);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+int convert_from_python_int(char *buffer, int size, void *data, PROPERTY *prop)
+{
+    return convert_from_python(buffer,size,data,prop,"l");
+}
+
+int convert_from_python_real(char *buffer, int size, void *data, PROPERTY *prop)
+{
+    return convert_from_python(buffer,size,data,prop,"d");
+}
+
+int convert_from_python_str(char *buffer, int size, void *data, PROPERTY *prop)
+{
+    return convert_from_python(buffer,size,data,prop,"s");
+}
+
+int convert_to_python(const char *buffer, /**< a pointer to the string buffer that is ignored */
+                      void *data, /**< a pointer to the data that is not changed */
+                      PROPERTY *prop, /**< a pointer to keywords that are supported */
+                      const char *format)
+{
+    PyObject **obj = (PyObject**)data;
+    if ( *obj != NULL )
+        Py_XDECREF(*obj);
+    *obj = Py_BuildValue(format,buffer);
+    if ( ! *obj )
+    {
+        *obj = Py_None;
+    }
+    Py_XINCREF(*obj);
+    return PyObject_Length(*obj);
+}
+
+int convert_to_python_int(const char *buffer, void *data, PROPERTY *prop)
+{
+    return convert_to_python(buffer,data,prop,"l");
+}
+
+int convert_to_python_real(const char *buffer, void *data, PROPERTY *prop)
+{
+    return convert_to_python(buffer,data,prop,"d");
+}
+
+int convert_to_python_str(const char *buffer, void *data, PROPERTY *prop)
+{
+    return convert_to_python(buffer,data,prop,"s");
 }
