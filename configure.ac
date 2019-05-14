@@ -605,8 +605,11 @@ AC_SUBST([MYSQL_LDFLAGS])
 AC_SUBST([MYSQL_LIBS])
 
 # Verify python version
-AM_PATH_PYTHON(3.6)
+AM_PATH_PYTHON(3.7)
 HAVE_PYTHON="$(which python3) ($(python3 --version))"
+PYTHON_INCLUDE="$(find /usr/local -name Python.h -print | grep python3.7)"
+GLD_CPPFLAGS="$GLD_CPPFLAGS -DHAVE_PYTHON -I\"${PYTHON_INCLUDE//\/Python.h/}\""
+GLD_LDFLAGS="$GLD_LDFLAGS -L/usr/local/Cellar/python/3.7.2_2/Frameworks/Python.framework/Versions/3.7 -lpython3.7 -ldl"
 
 ###############################################################################
 # The End
@@ -653,6 +656,7 @@ AC_MSG_RESULT([
     CXXFLAGS: ................... ${CXXFLAGS:-(none)}
     CPPFLAGS: ................... ${CPPFLAGS:-(none)}
     LDFLAGS: .................... ${LDFLAGS:-(none)}
+    GLD FLAGS: ................... ${GLD_CPPFLAGS} ${GLD_LDFLAGS}
 
   Installation paths:
 

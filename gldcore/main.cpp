@@ -52,7 +52,7 @@ void GldMain::pause_at_exit(void)
     @returns Exit codes XC_SUCCESS, etc. (see gridlabd.h)
  **/
 GldMain *my_instance = NULL; // TODO: move this to main to make main reentrant
-#ifdef HAVE_PYTHON
+#ifdef PYTHON_MODULE
 extern "C" int main_python
 #else
 int main
