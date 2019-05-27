@@ -1,6 +1,6 @@
 // test_calibrate.glm
 //
-// This test calibrates a house model based on recorded energy use and temperature data
+// This test calibrates a house model based on recorded energy use and weather data
 //
 
 #define GAS_APPLIANCE=FALSE
@@ -41,6 +41,8 @@ object house
 	name "house";
 	weather "weather";
 	gas_appliances ${GAS_APPLIANCE:-FALSE};
+	heating_setpoint "70 degF";
+	cooling_setpoint "80 degF";
 #ifexist "calibrate.glm"
 #include "calibrate.glm"
 #else
