@@ -1,0 +1,72 @@
+// test_calibrate.glm
+//
+// This test calibrates a house model based on recorded energy use and temperature data
+//
+
+#define GAS_APPLIANCE=FALSE
+#define literal_if=TRUE
+
+#set complex_format=(%+g%+gj)
+
+clock 
+{
+	timezone "US/CA/San Francisco";
+	starttime "2010-01-01 00:00:00 PST";
+	stoptime "2011-01-01 00:00:00 PST";
+}
+
+module climate;
+object climate
+{
+	name "weather";
+	tmyfile "CA-San_Francisco_Intl_Ap.tmy3";
+}
+
+module tape;
+module residential
+{
+#if ${GAS_APPLIANCE:-FALSE} == TRUE
+	implicit_enduses "CLOTHESWASHER|REFRIGERATOR|FREEZER|MICROWAVE|DISHWASHER|PLUGS|LIGHTS";
+#else
+	implicit_enduses "DRYER|CLOTHESWASHER|RANGE|REFRIGERATOR|FREEZER|MICROWAVE|DISHWASHER|PLUGS|LIGHTS";
+#endif
+	implicit_enduse_source "RBSA2014";
+}
+class house
+{
+	bool gas_appliances;
+}
+object house 
+{
+	name "house";
+	weather "weather";
+	gas_appliances ${GAS_APPLIANCE:-FALSE};
+#ifexist "calibrate.glm"
+#include "calibrate.glm"
+#else
+	object recorder
+	{
+		file "house_cfg.csv";
+		property "UA,heating_COP,cooling_COP,gas_appliances";
+		interval -1;
+	};
+#endif
+}
+
+object multi_recorder 
+{
+	property "weather:temperature,house:air_temperature,house:panel.energy,house:heating_setpoint,house:cooling_setpoint";
+#ifexist "calibrate.glm"
+	file "house_test.csv"
+#else
+	file "house.csv";
+#endif
+	interval "1 h";
+	limit 8760;
+};
+
+#ifexist "calibrate.glm"
+script on_term "python3 evaluate.py";
+#else
+script on_term "python3 calibrate.py";
+#endif
