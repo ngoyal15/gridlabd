@@ -12,7 +12,7 @@ config = {
 	"heat_fraction": 0.8, 		# fraction of energy use that ends up as heat in the house air [pu]
 	"heating_cop": 2.5, 		# efficiency of the home heating system (~0.01 for none, ~2.5 for heat pumps, ~100 for gas units) [pu]
 	"cooling_cop": 3.5, 		# efficiency of the home cooling system (~0.01 for none, ~3.5 for A/C units) Btu/Wh
-	"system_efficiency" : 0.6, # overall performance factor the heating/cooling systems (~0.7-0.8 for forced air systems) [pu]
+	"system_efficiency" : 0.6,	# overall performance factor the heating/cooling systems (~0.7-0.8 for forced air systems) [pu]
 	"Bh": 60.0, 				# initial heating balance temperature (~60) [degF
 	"Bc": 70.0, 				# initial cooling balance temperature (~70) [degF]
 	"gas_enduses" : False, 		# True if dryer and range use gas instead of electricity
@@ -105,6 +105,8 @@ while not done :
 inferred_UA = (xy["x"][1]+xy["x"][2])/2
 baseload_kW = xy["x"][0]/eta_i
 
+print("Heating........ %6.1f" % Bh)
+print("Cooling........ %6.1f" % Bc)
 print("Inferred UA.... %6.1f Btu/degF.h" % inferred_UA)
 print("Baseload....... %6.1f kW" % baseload_kW)
 

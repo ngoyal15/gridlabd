@@ -4,7 +4,6 @@
 //
 
 #define GAS_APPLIANCE=FALSE
-#define literal_if=TRUE
 
 #set complex_format=(%+g%+gj)
 
@@ -22,6 +21,8 @@ object climate
 	tmyfile "CA-San_Francisco_Intl_Ap.tmy3";
 }
 
+
+#define literal_if=TRUE
 module tape;
 module residential
 {
