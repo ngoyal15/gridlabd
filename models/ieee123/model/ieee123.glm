@@ -101,6 +101,7 @@ module powerflow {
 	line_capacitance true;
 	convergence_error_handling IGNORE;
 	solver_profile_enable true;
+	solver_profile_filename "output/solver_nr_out.csv";
 }
 
 #ifdef SOLAR
