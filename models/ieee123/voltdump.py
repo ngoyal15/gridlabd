@@ -11,7 +11,7 @@ nodes = ["Timestamp"]
 lastnodes = []
 timestamp = None
 timezone = "UTC"
-with open('output/volt_dump.csv', 'r') as dumpfile:
+with open('output/current_and_volt/volt_dump.csv', 'r') as dumpfile:
 	print("Reading volt_dump...")
 	reader = csv.reader(dumpfile)
 	for row in reader :
