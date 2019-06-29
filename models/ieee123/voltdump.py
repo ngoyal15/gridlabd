@@ -42,7 +42,7 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 			except :
 				print("ERROR: ignored row '%s'" % row)
 
-with open('output/final_output/voltages.csv','w') as voltages:
+with open('output/voltages.csv','w') as voltages:
 	print("Writing voltages...")
 	writer = csv.writer(voltages)
 	writer.writerow(nodes)
