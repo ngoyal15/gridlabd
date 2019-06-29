@@ -11,7 +11,7 @@ nodes = ["Timestamp"]
 lastnodes = []
 timestamp = None
 timezone = "UTC"
-with open('output/empty/volt_dump.csv', 'r') as dumpfile:
+with open('output/volt_dump.csv', 'r') as dumpfile:
 	print("Reading volt_dump...")
 	reader = csv.reader(dumpfile)
 	for row in reader :
@@ -42,7 +42,7 @@ with open('output/empty/volt_dump.csv', 'r') as dumpfile:
 			except :
 				print("ERROR: ignored row '%s'" % row)
 
-with open('output/voltages.csv','w') as voltages:
+with open('output/final_output/voltages.csv','w') as voltages:
 	print("Writing voltages...")
 	writer = csv.writer(voltages)
 	writer.writerow(nodes)
