@@ -14,7 +14,7 @@
 #define HOSTNAME=localhost
 #define MYSQLHOST=${HOSTNAME}
 #define NAME=ieee123.glm
-#define PORT=3306
+#define PORT=330
 #define WEATHER=CA-Bakersfield_Meadows_Field.tmy3
 #define TIMEZONE=US/CA/Los Angeles
 #define LOADS=on
