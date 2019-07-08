@@ -12,16 +12,16 @@
 //
 #include "config/default.glm"
 #define CONFIGFILE=config/default.glm
-#ifexist config/model.glm
-#include "config/model.glm"
-#set CONFIGFILE=config/model.glm
+#ifexist config/local.glm
+#include "config/local.glm"
+#set CONFIGFILE=config/local.glm
 #endif
 
 //
 // Check the configuration
 //
 #ifndef PORT // this is required and defined in config/local.glm
-#error config/model.glm load failed: if you have not already done so you must your server configure using config.php to create config/local.glm
+#error config/local.glm load failed: if you have not already done so you must your server configure using config.php to create config/local.glm
 #endif // PORT
 
 ///////////////////////////////////////////////////////
