@@ -52,7 +52,7 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 #			model_number = line.split('_')[1]
 #			path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
 #			path_powers = "output/fianl_output/model_"+model_number+"/powers.csv"
-with open("output/fianl_output/model_1/powers.csv",'w') as voltages:
+with open("output/final_output/model_1/powers.csv",'w') as voltages:
 	print("Writing voltages...")
 	writer = csv.writer(voltages)
 	writer.writerow(nodes)
