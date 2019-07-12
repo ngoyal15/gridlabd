@@ -11,6 +11,8 @@ nodes = ["Timestamp"]
 lastnodes = []
 timestamp = None
 timezone = "UTC"
+cwd = os.getcwd()
+print(cwd)
 with open('output/volt_dump.csv', 'r') as dumpfile:
 	print("Reading volt_dump...")
 	reader = csv.reader(dumpfile)
