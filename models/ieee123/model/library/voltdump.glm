@@ -3,7 +3,7 @@ script on_term "python3 voltdump.py";
 object voltdump {
 	filemode "a";
 	filename "output/volt_dump.csv";
-	on_init "mkdir -p output/final_output/{model_1/model_2/model_3/model_4}; rm -rf output/power_dump_*.csv output/volt_dump.csv";
+	on_init "mkdir -p output/final_output/{model_1,model_2,model_3,model_4}; rm -rf output/power_dump_*.csv output/volt_dump.csv";
 #ifdef STARTRECORDTIME
 	in_svc ${STARTRECORDTIME};
 #endif //STARTRECORDTIME
@@ -13,7 +13,7 @@ object voltdump {
 object currdump {
 	filemode "a";
 	filename "output/curr_dump.csv";
-	on_init "mkdir -p output/final_output/{model_1/model_2/model_3/model_4}; rm -rf output/curr_dump_*.csv ";
+	on_init "mkdir -p output/final_output/{model_1,model_2,model_3,model_4}; rm -rf output/curr_dump_*.csv ";
 #ifdef STARTRECORDTIME
 	in_svc ${STARTRECORDTIME};
 #endif //STARTRECORDTIME
