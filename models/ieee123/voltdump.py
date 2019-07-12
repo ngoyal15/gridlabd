@@ -42,7 +42,7 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 			except :
 				print("ERROR: ignored row '%s'" % row)
 
-with open('output/final_output/voltages.csv','w') as voltages:
+with open('output/final_output/model1/voltages.csv','w') as voltages:
 	print("Writing voltages...")
 	writer = csv.writer(voltages)
 	writer.writerow(nodes)
@@ -95,7 +95,7 @@ for filename in os.listdir("output") :
 				except:
 					print("%s: error parsing row '%s', values ignored" % (filename,row))
 
-with open("output/final_output/powers.csv","w") as powers:
+with open("output/final_output/model1/powers.csv","w") as powers:
 	print("Writing powers...")
 	writer = csv.writer(powers)
 	writer.writerow(headers)
