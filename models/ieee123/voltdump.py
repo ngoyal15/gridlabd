@@ -104,7 +104,7 @@ for filename in os.listdir("output") :
 					data[timestamp].extend(list(map(lambda x:to_complex(x),row[1:])))
 				except:
 					print("%s: error parsing row '%s', values ignored" % (filename,row))
-with open("output/fianl_output/model_1/powers.csv","w") as powers:
+with open("output/final_output/model_1/powers.csv","w") as powers:
 	print("Writing powers...")
 	writer = csv.writer(powers)
 	writer.writerow(headers)
