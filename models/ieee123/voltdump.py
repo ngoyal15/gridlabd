@@ -43,16 +43,16 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 				data[timestamp].extend([A,B,C])
 			except :
 				print("ERROR: ignored row '%s'" % row)
-#path_voltages = "output/final_output/model_1/voltages.csv"
-#path_powers = "output/fianl_output/model_1/powers.csv"
-#with open ("gridlabd/models/ieee123/config/model.glm","r") as checking_model:
-#	line= checking_model.readlines()
-#	for i,line in enumerate(checking_model,1):
-#		if i== 7:
-#			model_number = line.split('_')[1]
-#			path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
-#			path_powers = "output/fianl_output/model_"+model_number+"/powers.csv"
-with open("output/final_output/model_1/powers.csv",'w') as voltages:
+path_voltages = "output/final_output/model_1/voltages.csv"
+path_powers = "output/final_output/model_1/powers.csv"
+with open ("config/model.glm","r") as checking_model:
+	line= checking_model.readlines()
+	for i,line in enumerate(checking_model,1):
+		if i== 7:
+			model_number = line.split('_')[1]
+			path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
+			path_powers = "output/final_output/model_"+model_number+"/powers.csv"
+with open(path_voltages,'w') as voltages:
 	print("Writing voltages...")
 	writer = csv.writer(voltages)
 	writer.writerow(nodes)
@@ -104,7 +104,7 @@ for filename in os.listdir("output") :
 					data[timestamp].extend(list(map(lambda x:to_complex(x),row[1:])))
 				except:
 					print("%s: error parsing row '%s', values ignored" % (filename,row))
-with open("output/final_output/model_1/powers.csv","w") as powers:
+with open(path_powers,"w") as powers:
 	print("Writing powers...")
 	writer = csv.writer(powers)
 	writer.writerow(headers)
