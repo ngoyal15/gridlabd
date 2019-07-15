@@ -43,8 +43,8 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 				data[timestamp].extend([A,B,C])
 			except :
 				print("ERROR: ignored row '%s'" % row)
-path_voltages = "output/final_output/model_1/voltages.csv"
-path_powers = "output/final_output/model_1/powers.csv"
+#path_voltages = "output/final_output/model_1/voltages.csv"
+#path_powers = "output/final_output/model_1/powers.csv"
 with open ("config/model.glm","r") as checking_model:
 	line= checking_model.readlines()
 	for i,line in enumerate(checking_model,1):
