@@ -52,66 +52,66 @@ with open ("config/model.glm","r") as checking_model:
 			model_number = line.split('_')[1]
 			path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
 			path_powers = "output/final_output/model_"+model_number+"/powers.csv"
-with open(path_voltages,'w') as voltages:
-	print("Writing voltages...")
-	writer = csv.writer(voltages)
-	writer.writerow(nodes)
-	for key in sorted(data.keys()) :
-		row = [key.strftime("%Y-%m-%dT%H:%M:%S%z")]
-		for value in data[key]:
-			row.append("%g%+gd" % (abs(value),(cmath.phase(value))*180/3.1415926))
+			with open(path_voltages,'w') as voltages:
+				print("Writing voltages...")
+				writer = csv.writer(voltages)
+				writer.writerow(nodes)
+				for key in sorted(data.keys()) :
+					row = [key.strftime("%Y-%m-%dT%H:%M:%S%z")]
+					for value in data[key]:
+						row.append("%g%+gd" % (abs(value),(cmath.phase(value))*180/3.1415926))
 			#row.append("%g%+gd" % (value.real,value.imag))
-		writer.writerow(row)
+						writer.writerow(row)
 
 
 
-headers = ["Timestamp"]
-data = {}
-timestamp = []
-# timestamp_current = []
-re_complex = re.compile("([+-][0-9]*\\.?[0-9]+|[+-][0-9]+.[0-9]+[eE][0-9]+)([+-][0-9]*\\.?[0-9]+|[+-][0-9]+.[0-9]+[eE][0-9]+)([ijdr])")
-def to_complex(s) :
-	r = re.split(re_complex,s)
-	if type(r) is list and len(r) > 4 :
-		if r[3] == 'd' :
-			m = float(r[1])
-			a = float(r[2])*3.1415926/180.0
-			return complex(m*math.cos(a),m*math.sin(a))
-		elif r[3] == 'r' :
-			m = float(r[1])
-			a = float(r[2])
-			return complex(m*math.cos(a),m*math.sin(a))
-	try :
-		return complex(s)
-	except :
-		raise Exception("complex('%s') is not valid" % s)
-
-
-for filename in os.listdir("output") :
-	if filename.startswith("power_dump_") :
-		with open("output/"+filename,"r") as dumpfile :
-			print("Timestamp Read %s..." % filename)
-			reader = csv.reader(dumpfile)
-			for row in reader:
-				if row[0][0] == '#' :
-					if row[0]=="# timestamp" :
-						headers.extend(row[1:])
-					continue
-				timestamp = glmptime.glmptime(row[0])
-				if not timestamp in data.keys() :
-					data[timestamp] = []
+			headers = ["Timestamp"]
+			data = {}
+			timestamp = []
+			# timestamp_current = []
+			re_complex = re.compile("([+-][0-9]*\\.?[0-9]+|[+-][0-9]+.[0-9]+[eE][0-9]+)([+-][0-9]*\\.?[0-9]+|[+-][0-9]+.[0-9]+[eE][0-9]+)([ijdr])")
+			def to_complex(s) :
+				r = re.split(re_complex,s)
+				if type(r) is list and len(r) > 4 :
+					if r[3] == 'd' :
+						m = float(r[1])
+						a = float(r[2])*3.1415926/180.0
+						return complex(m*math.cos(a),m*math.sin(a))
+					elif r[3] == 'r' :
+						m = float(r[1])
+						a = float(r[2])
+						return complex(m*math.cos(a),m*math.sin(a))
 				try :
-					data[timestamp].extend(list(map(lambda x:to_complex(x),row[1:])))
-				except:
-					print("%s: error parsing row '%s', values ignored" % (filename,row))
-with open(path_powers,"w") as powers:
-	print("Writing powers...")
-	writer = csv.writer(powers)
-	writer.writerow(headers)
-	for key,values in data.items() :
-		data = [key.strftime("%Y-%m-%dT%H:%M:%S%z")]
-		for value in values:
-			#data.append("%g%+gj" % (value.real,value.imag))
-			data.append("%g%+gd" % (abs(value),(cmath.phase(value))*180/3.1415926))
-		writer.writerow(data)
+					return complex(s)
+				except :
+					raise Exception("complex('%s') is not valid" % s)
+
+
+			for filename in os.listdir("output") :
+				if filename.startswith("power_dump_") :
+					with open("output/"+filename,"r") as dumpfile :
+						print("Timestamp Read %s..." % filename)
+						reader = csv.reader(dumpfile)
+						for row in reader:
+							if row[0][0] == '#' :
+								if row[0]=="# timestamp" :
+									headers.extend(row[1:])
+								continue
+							timestamp = glmptime.glmptime(row[0])
+							if not timestamp in data.keys() :
+								data[timestamp] = []
+							try :
+								data[timestamp].extend(list(map(lambda x:to_complex(x),row[1:])))
+							except:
+								print("%s: error parsing row '%s', values ignored" % (filename,row))
+			with open(path_powers,"w") as powers:
+				print("Writing powers...")
+				writer = csv.writer(powers)
+				writer.writerow(headers)
+				for key,values in data.items() :
+					data = [key.strftime("%Y-%m-%dT%H:%M:%S%z")]
+					for value in values:
+						#data.append("%g%+gj" % (value.real,value.imag))
+						data.append("%g%+gd" % (abs(value),(cmath.phase(value))*180/3.1415926))
+					writer.writerow(data)
 
