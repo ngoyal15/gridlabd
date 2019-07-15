@@ -54,9 +54,9 @@ with open ("config/model.glm","r") as checking_model:
 	#	print("Inside the for loop")
 	#	if(i== 7):
 	#		print("Inside the while loop")
-			model_number = specific.split('_')[1]
-			path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
-			path_powers = "output/final_output/model_"+model_number+"/powers.csv"
+	model_number = specific.split('_')[1]
+	path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
+	path_powers = "output/final_output/model_"+model_number+"/powers.csv"
 	#		print(path_voltages)
 	#	else:
 	#		i = i+1
