@@ -93,8 +93,8 @@ object climate {
 
 ///////////////////////////////////////////////////////
 //
-// MODEL - for output files
-//
+// MODEL - for output, and running different .glm files
+//	   together
 //////////////////////////////////////////////////////
 #ifndef MODEL
 #error MODEL is not specified in ${CONFIGFILE}
