@@ -50,6 +50,7 @@ with open ("config/model.glm","r") as checking_model:
 	#i=1
 	line= checking_model.readlines()
 	specific = line[6]
+	word = specific.substring([0:7])
 	#for i,line in enumerate(checking_model,1):
 	#	print("Inside the for loop")
 	#	if(i== 7):
