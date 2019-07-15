@@ -58,7 +58,7 @@ with open ("config/model.glm","r") as checking_model:
 			path_powers = "output/final_output/model_"+model_number+"/powers.csv"
 			print(path_voltages)
 		else:
-			i++
+			i = i+1
 			continue
 with open(path_voltages,'w') as voltages:
 	print("Writing voltages...")
