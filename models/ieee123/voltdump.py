@@ -55,8 +55,7 @@ with open ("config/model.glm","r") as checking_model:
 	#	if(i== 7):
 	#		print("Inside the while loop")
 	word = specific.split('_')[1]
-	print(word)
-	model_number = word[0:7]
+	model_number = word[0:1]
 	path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
 	path_powers = "output/final_output/model_"+model_number+"/powers.csv"
 	#		print(path_voltages)
