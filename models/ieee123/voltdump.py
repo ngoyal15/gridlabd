@@ -50,12 +50,12 @@ with open ("config/model.glm","r") as checking_model:
 	#i=1
 	line= checking_model.readlines()
 	specific = line[6]
-	word = specific.substring([0:7])
 	#for i,line in enumerate(checking_model,1):
 	#	print("Inside the for loop")
 	#	if(i== 7):
 	#		print("Inside the while loop")
-	model_number = specific.split('_')[1]
+	word = specific.split('_')[1]
+	model_number = word([0:7])
 	path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
 	path_powers = "output/final_output/model_"+model_number+"/powers.csv"
 	#		print(path_voltages)
