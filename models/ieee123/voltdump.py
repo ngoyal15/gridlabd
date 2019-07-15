@@ -48,7 +48,7 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 with open ("config/model.glm","r") as checking_model:
 	line= checking_model.readlines()
 	for i,line in enumerate(checking_model,1):
-		if i== 7:
+		while(i!= 7):
 			model_number = line.split('_')[1]
 			path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
 			path_powers = "output/final_output/model_"+model_number+"/powers.csv"
