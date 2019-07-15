@@ -46,9 +46,12 @@ with open('output/volt_dump.csv', 'r') as dumpfile:
 #path_voltages = "output/final_output/model_1/voltages.csv"
 #path_powers = "output/final_output/model_1/powers.csv"
 with open ("config/model.glm","r") as checking_model:
+	print("Inside the loop")
 	line= checking_model.readlines()
 	for i,line in enumerate(checking_model,1):
+		print("Inside the for loop")
 		while(i!= 7):
+			print("Inside the while loop")
 			model_number = line.split('_')[1]
 			path_voltages = "output/final_output/model_"+model_number+"/voltages.csv"
 			path_powers = "output/final_output/model_"+model_number+"/powers.csv"
