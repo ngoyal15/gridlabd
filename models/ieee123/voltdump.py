@@ -49,7 +49,7 @@ with open ("config/model.glm","r") as checking_model:
 	print("Inside the loop")
 	#i=1
 	line= checking_model.readlines()
-	specific = line[7]
+	specific = line[6]
 	#for i,line in enumerate(checking_model,1):
 	#	print("Inside the for loop")
 	#	if(i== 7):
