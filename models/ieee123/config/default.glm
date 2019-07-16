@@ -25,3 +25,4 @@
 #define POLE_TYPE=${POLE_TYPE:-node}
 #define VOLTDUMP=${VOLTDUMP:-off}
 #define CURRDUMP=${CURRDUMP:-off}
+
