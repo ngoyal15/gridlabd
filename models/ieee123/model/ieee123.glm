@@ -15,8 +15,6 @@
 #ifexist config/model.glm
 #include "config/model.glm"
 #set CONFIGFILE=config/model.glm
-#else
-#error CONFIGFILE does not exist
 #endif
 
 //
