@@ -11,20 +11,20 @@
 #endif // POLE_TYPE defined
 
 #define NAME=${NAME:-ieee8500.glm}
-#define PORT=${PORT:-3306}
+//#define PORT=${PORT:-3306}
 #define TIMEZONE=${TIMEZONE:-US/CA/Los Angeles}
-#define LOADS=${LOADS:-off}
+//#define LOADS=${LOADS:-off}
 
 #define STARTTIME=2018-03-01 00:00:00 PST
 #define STOPTIME=2018-03-01 00:10:00 PST
 #define WEATHER=${WEATHER:-CA-Bakersfield_Meadows_Field_high_wind.tmy3}
 
-#define MYSQL_ENABLE=${MYSQL_ENABLE:-off}
-#define HOSTNAME=${HOSTNAME:-localhost}
-#define MYSQLHOST=${MYSQLHOST:-localhost}
-#define MYSQL_NAME=${MYSQL_NAME:-ieee8500}
-#define MYSQL_SCADA=${MYSQL_SCADA:-off}
-#define MYSQL_GRAPH=${MYSQL_GRAPH:-off}
+//#define MYSQL_ENABLE=${MYSQL_ENABLE:-off}
+//#define HOSTNAME=${HOSTNAME:-localhost}
+//#define MYSQLHOST=${MYSQLHOST:-localhost}
+//#define MYSQL_NAME=${MYSQL_NAME:-ieee8500}
+//#define MYSQL_SCADA=${MYSQL_SCADA:-off}
+//#define MYSQL_GRAPH=${MYSQL_GRAPH:-off}
 
 //#define VOLTDUMP=${VOLTDUMP:-off}
 //#define CURRDUMP=${CURRDUMP:-off}
