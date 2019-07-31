@@ -13,7 +13,7 @@
 #define NAME=${NAME:-ieee8500.glm}
 //#define PORT=${PORT:-3306}
 #define TIMEZONE=${TIMEZONE:-US/CA/Los Angeles}
-//#define LOADS=${LOADS:-off}
+#define LOADS=${LOADS:-off}
 
 #define STARTTIME=2018-03-01 00:00:00 PST
 #define STOPTIME=2018-03-01 00:10:00 PST
@@ -26,7 +26,7 @@
 //#define MYSQL_SCADA=${MYSQL_SCADA:-off}
 //#define MYSQL_GRAPH=${MYSQL_GRAPH:-off}
 
-//#define VOLTDUMP=${VOLTDUMP:-off}
-//#define CURRDUMP=${CURRDUMP:-off}
+#define VOLTDUMP=${VOLTDUMP:-off}
+#define CURRDUMP=${CURRDUMP:-off}
 //#define MODEL=model_1
 //#define STARTRECORDTIME=2018-03-03 00:00:00 PST
