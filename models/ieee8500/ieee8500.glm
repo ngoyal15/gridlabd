@@ -47,7 +47,7 @@ module powerflow {
     line_limits FALSE;
     default_maximum_voltage_error 1e-4;
     solver_profile_enable true;
-    solver_profile_filename "final_output/solver_nr_out.csv";
+    solver_profile_filename "/root/project/final_output/solver_nr_out.csv";
 };
 module residential {
      implicit_enduses NONE;
