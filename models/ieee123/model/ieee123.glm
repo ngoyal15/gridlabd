@@ -17,6 +17,7 @@
 #set CONFIGFILE=config/model.glm
 #endif
 
+#set timestamp = 60
 //
 // Check the configuration
 //
