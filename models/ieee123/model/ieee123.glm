@@ -17,8 +17,6 @@
 #set CONFIGFILE=config/model.glm
 #endif
 
-#set strictnames=FALSE
-#set timestep = 60
 //
 // Check the configuration
 //
