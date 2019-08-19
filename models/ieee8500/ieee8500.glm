@@ -203,7 +203,7 @@ module tape;
 //
 ////////////////////////////////////////
 #ifexist data/${WEATHER}
-module climate
+module climate;
 object climate {
      name "weather";
      tmyfile "data/${WEATHER}";
